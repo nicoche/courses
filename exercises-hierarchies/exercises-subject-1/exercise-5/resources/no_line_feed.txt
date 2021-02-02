@@ -1,0 +1,1 @@
+This is a file which does not end with a line feed.

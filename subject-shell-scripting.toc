@@ -1,0 +1,37 @@
+\contentsline {section}{\numberline {1}Foreword}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Notions seen in the tutorials}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Objectives}{3}{subsection.1.2}
+\contentsline {section}{\numberline {2}Setup}{3}{section.2}
+\contentsline {section}{\numberline {3}Instructions}{4}{section.3}
+\contentsline {section}{\numberline {4}Evaluation}{4}{section.4}
+\contentsline {subsection}{\numberline {4.1}Instructions}{4}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}A word on cheating}{5}{subsection.4.2}
+\contentsline {section}{\numberline {5}Exercises}{6}{section.5}
+\contentsline {subsection}{\numberline {5.1}ls\_on\_steroids.sh}{6}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}Goal}{6}{subsubsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.2}Example}{6}{subsubsection.5.1.2}
+\contentsline {subsubsection}{\numberline {5.1.3}Solution}{7}{subsubsection.5.1.3}
+\contentsline {subsection}{\numberline {5.2}ls\_ordered.sh}{7}{subsection.5.2}
+\contentsline {subsubsection}{\numberline {5.2.1}Goal}{7}{subsubsection.5.2.1}
+\contentsline {subsubsection}{\numberline {5.2.2}Example}{7}{subsubsection.5.2.2}
+\contentsline {subsection}{\numberline {5.3}ls\_ordered\_with\_arguments.sh}{8}{subsection.5.3}
+\contentsline {subsubsection}{\numberline {5.3.1}Goal}{8}{subsubsection.5.3.1}
+\contentsline {subsubsection}{\numberline {5.3.2}New notions: arguments retrieval}{8}{subsubsection.5.3.2}
+\contentsline {subsubsection}{\numberline {5.3.3}New notions: exit}{9}{subsubsection.5.3.3}
+\contentsline {subsubsection}{\numberline {5.3.4}Example}{10}{subsubsection.5.3.4}
+\contentsline {subsection}{\numberline {5.4}salutation.sh}{10}{subsection.5.4}
+\contentsline {subsubsection}{\numberline {5.4.1}Goal}{10}{subsubsection.5.4.1}
+\contentsline {subsubsection}{\numberline {5.4.2}New notions: conditions}{11}{subsubsection.5.4.2}
+\contentsline {subsubsection}{\numberline {5.4.3}Example}{12}{subsubsection.5.4.3}
+\contentsline {subsection}{\numberline {5.5}salutation\_advanced.sh}{12}{subsection.5.5}
+\contentsline {subsubsection}{\numberline {5.5.1}Goal}{12}{subsubsection.5.5.1}
+\contentsline {subsubsection}{\numberline {5.5.2}Example}{13}{subsubsection.5.5.2}
+\contentsline {subsection}{\numberline {5.6}my\_ansible.sh}{13}{subsection.5.6}
+\contentsline {subsubsection}{\numberline {5.6.1}Goal}{13}{subsubsection.5.6.1}
+\contentsline {subsubsection}{\numberline {5.6.2}Example}{14}{subsubsection.5.6.2}
+\contentsline {subsection}{\numberline {5.7}my\_ansible\_advanced.sh}{15}{subsection.5.7}
+\contentsline {subsubsection}{\numberline {5.7.1}Goal}{15}{subsubsection.5.7.1}
+\contentsline {subsubsection}{\numberline {5.7.2}Example}{15}{subsubsection.5.7.2}
+\contentsline {subsection}{\numberline {5.8}guessing\_game.sh}{16}{subsection.5.8}
+\contentsline {subsubsection}{\numberline {5.8.1}Goal}{16}{subsubsection.5.8.1}
+\contentsline {subsubsection}{\numberline {5.8.2}Example}{17}{subsubsection.5.8.2}

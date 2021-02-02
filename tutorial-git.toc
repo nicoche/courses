@@ -1,0 +1,23 @@
+\contentsline {section}{\numberline {1}Foreword}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Objective}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Preliminary setup}{2}{subsection.1.2}
+\contentsline {section}{\numberline {2}Git}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}The why: problems, problems, problems}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}The what: Version Control System}{3}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}The why you should really really learn using git}{3}{subsection.2.3}
+\contentsline {section}{\numberline {3}Theory}{3}{section.3}
+\contentsline {subsection}{\numberline {3.1}Basics \& vocabulary}{4}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}State of files}{4}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Workflow}{4}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Basic commands}{4}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}So, how to commit?}{5}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}Summing it all in a schema}{8}{subsubsection.3.3.3}
+\contentsline {subsubsection}{\numberline {3.3.4}One last thing}{8}{subsubsection.3.3.4}
+\contentsline {section}{\numberline {4}Practical exercises}{8}{section.4}
+\contentsline {subsection}{\numberline {4.1}Getting access}{9}{subsection.4.1}
+\contentsline {subsubsection}{\numberline {4.1.1}Connection to the platform}{9}{subsubsection.4.1.1}
+\contentsline {subsubsection}{\numberline {4.1.2}SSH access}{9}{subsubsection.4.1.2}
+\contentsline {subsubsection}{\numberline {4.1.3}Git local configuration}{10}{subsubsection.4.1.3}
+\contentsline {subsection}{\numberline {4.2}Try out commands!}{10}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Cloning the repository}{10}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Exercises}{11}{subsubsection.4.2.2}

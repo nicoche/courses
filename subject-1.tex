@@ -1,0 +1,1003 @@
+ \documentclass[12pt]{article}
+%\usepackage[portuguese]{babel}
+\usepackage{natbib}
+\usepackage[hyphens]{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{vmargin}
+\setmarginsrb{1.5 cm}{2.5 cm}{1.5 cm}{2.5 cm}{1 cm}{1.5 cm}{1 cm}{1.5 cm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\let\oldhref\href
+\renewcommand{\href}[2]{\oldhref{#1}{\bfseries#2}}
+
+\usepackage[bottom]{footmisc}
+\usepackage{caption}
+\DeclareCaptionFormat{sanslabel}{#3}%
+\usepackage[section]{placeins}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{medium-gray}{gray}{0.5}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue},
+  backgroundcolor=\color{light-gray},
+  breaklines=true,
+  extendedchars=true,
+  literate={é}{{\'e}}1
+}
+\lstset{aboveskip=15pt,belowskip=15pt}
+\usepackage[autostyle]{csquotes}  
+\def\labelitemi{--}
+\usepackage{enumitem}
+\setlist{nosep}
+\usepackage{booktabs}
+\usepackage{datetime}
+\lstdefinestyle{codestyle}{
+    numbers=left,
+    numbersep=10pt,
+    numberstyle=\color{medium-gray}
+}
+
+% Quoting magic to have the Author of the quote after the actual quote
+\let\oldquote\quote
+\let\endoldquote\endquote
+\renewenvironment{quote}[2][]
+  {\if\relax\detokenize{#1}\relax
+     \def\quoteauthor{#2}%
+   \else
+     \def\quoteauthor{#2~---~#1}%
+   \fi
+   \oldquote}
+  {\par\nobreak\smallskip\hfill(\quoteauthor)%
+   \endoldquote\addvspace{\bigskipamount}}
+
+
+\title{Subject 1}								% Title
+%\author{}								% Author
+\date{\today}											% Date
+
+\makeatletter
+\let\thetitle\@title
+%\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+\pagestyle{fancy}
+\fancyhf{}
+%\rhead{\theauthor}
+\lhead{\thetitle}
+\cfoot{\thepage}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+	\centering
+    \vspace*{0.5 cm}
+    \includegraphics[scale = 0.3]{logo4.png}\\[1.0 cm]
+    \textsc{\LARGE \newline\newline UNIX 101}\\[2.0 cm]
+	\textsc{\Large or "How to feel like a true hack3r"}\\[0.5 cm]
+	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
+	{ \huge \bfseries \thetitle}\\
+	\rule{\linewidth}{0.2 mm} \\[1.5 cm]
+	
+    \thedate
+    
+    
+    
+	
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Foreword}
+\subsection{Notions seen in the tutorial}
+
+Welcome to subject-1! If you have finished tutorial-1 (and I hope you do, if you have not yet, please finish it now), you should know:
+
+\begin{itemize}
+\item What the syntax of a command is
+\item A few useful commands
+\item How to navigate in a filesystem
+\item How to create, edit and remove files
+\item What is a packet manager and how to use one 
+\item How to create your own executable scripts
+\end{itemize}
+
+This is just enough to begin writing code in a local environment.
+
+\subsection{Objectives}
+
+The goal of this subject is to make you use the notions seen in the tutorial through coding exercises.
+Additionally, we will have a look over key concepts to development and UNIX in general.
+
+Last but not least, you are going to be evaluated on the exercises of this document. You are not expected to finish them during the course: you have an additional two weeks to work on them before having to hand in your solutions.
+
+\section{Setup}
+\subsection{A word on git}
+
+\begin{quote}{\texttt{man git}}
+\textit{Git is a fast, scalable, distributed \textbf{revision control system} with and unusually rich command set that provides both high-level operations and full access to internals.}
+\end{quote}
+
+To explain it in clearer terms, \texttt{git} is a tool that allows one to versionate documents. In software engineering (actually, in all of the fields of computer engineering), it is primordial to keep track of its work, especially when collaborating on the same projects.
+
+\begin{itemize}
+\item You have been working alone on a project for two months but one day you mess things up and delete some files? \texttt{git} can rollback the changes.
+\item You want to try to revamp your code but are not sure that you will be able to have a working version on time for the deadline? With \texttt{git}, you can keep a marker on the last working version and can rollback to it at any time.
+\item You are working in a team on the same project and want to share your work without conflicts? A \texttt{git} server can save your life.
+\end{itemize}
+
+Every serious company in the world uses a revision control system and fast, scalable and distributed attributes, \texttt{git} is by far the most popular.
+
+\subsection{Installation}
+
+We are not going to go into the details on \texttt{git}'s huge set of features as it would take some time, but we are going to at least use it to download resources for the exercises.
+
+First of all, install \texttt{git} if you do not already have it somewhere in your system. You should know how to install a package by now, if not, read again section 4 of the tutorial!
+
+To check out how it works, let us download the git repository\footnote{A git repository is a directory managed by git} containing the exercises. The Github page is available here: \url{https://github.com/nikointhehood/unix-101}. In git language, we \textit{clone} a repository. So, let's clone it! Click on "Clone or download" and retrieve the clone url : \texttt{https://github.com/nikointhehood/unix-101.git}. Then, invoke the command \texttt{git clone}.
+
+\begin{lstlisting}[language=bash]
+$ls # The current directory is empty, let  us clone the repo unix-101
+$git clone https://github.com/nikointhehood/unix-101.git
+Cloning into 'unix-101'...
+remote: Enumerating objects: 40, done.
+remote: Counting objects: 100% (40/40), done.
+remote: Compressing objects: 100% (23/23), done.
+remote: Total 40 (delta 4), reused 40 (delta 4), pack-reused 0
+Unpacking objects: 100% (40/40), done.
+Checking connectivity... done.
+$ls
+unix-101/ # There we have it!
+$ls unix-101/lesson-1/subject/exercises
+exercise-0/  exercise-1/  exercise-2/  exercise-3/  exercise-4/  exercise-5/  exercise-6/  exercise-7/  tests_framework.py
+\end{lstlisting}
+
+Github is a service hosting git servers. There exist others (Gitlab, Bitbucket, even private instances of Gitlab/Github/Bitbucket for companies, etc) but Github is widely used for open-source projects.
+People from all over the world collaborate into writing software and sharing them to the world, for free. This kind of project is called \textit{open-source}: anybody can participate and add new features to them by suggesting changes to the code.
+Actually, a lot of the most impressive computer engineering projects, extensively used by companies all over the world are open-source. The Linux kernel is findable on Github, for example\footnote{Here: \url{https://github.com/torvalds/linux}. Anybody can contribute, but that necessites some mad skillz.}.
+
+\section{Exercise 0: max (example)}
+
+Each exercise you are going to have to do is bundled with tests.
+Let us proceed with an example.
+
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{biggest.py}
+        \item[Online help:] Check out the following links for more documentation
+\begin{itemize}
+	\item Command line arguments: \href{https://docs.python.org/3.0/library/sys.html\#sys.argv}{Python3 official documentation}
+	\item Type conversion: \href{https://en.wikibooks.org/wiki/Python_Programming/Data_Types\#Type_conversion}{Wikibooks examples}
+\end{itemize}
+\end{description}
+
+You have to write a Python3 script that will take two integer arguments and print the bigger one, followed by a line feed\footnote{In UNIX, a line feed is represented by a \texttt{\char`\\
+n}. Some printing functions, like Python's \texttt{print()} automatically add one at the end of the printed message}.
+
+If the two integers are equal, it should print \texttt{"The integers are equal"}, followed by a line feed
+
+In case of an error, it should print \texttt{"Usage: ./biggest.py integer1 integer2"}, followed by a line feed.
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+The error cases are:
+
+\begin{itemize}
+	\item If there are less than two arguments
+	\item If there are more than two arguments
+	\item If the arguments are not integers
+\end{itemize}
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./biggest.py 7 121
+121
+$./biggest.py -1 31
+31
+$./biggest.py 8
+Usage: ./biggest.py integer1 integer2
+$./biggest.py 1 2 3 4 5
+Usage: ./biggest.py integer1 integer2
+$./biggest.py 0.7 11
+Usage: ./biggest.py integer1 integer2
+\end{lstlisting}
+
+\subsection{New notions}
+
+To complete this exercise, you need to know a few more things.
+
+\subsubsection{Arguments retrieval}
+
+UNIX programs are launched through the command line. As we have seen with the many commands we learnt in the tutorial, one can pass command line arguments to change their behavior.
+
+So how does a program retrieve the user's arguments? Well it is system-dependant but usually, programs can access them using the \texttt{argv} variable. In Python, one must first import the \texttt{sys} package and can then look for the program arguments in the variable \texttt{sys.argv}.
+
+\texttt{sys.argv} is a list containing the following items:
+
+\begin{itemize}
+\item At index 0, the name of the Python program
+\item At index 1, the first argument
+\item At index 2, the second argument
+\item At index 3, the third argument
+\item ...
+\end{itemize}
+
+Let us check out an example:
+
+\begin{lstlisting}[language=python,style=codestyle,title=print\_argv.py]
+#! /usr/bin/python3
+
+import sys
+print("argv is a list of", len(sys.argv), "elements:", sys.argv)
+\end{lstlisting}
+
+Now, let us see what happens with zero, one or multiple command line arguments:
+
+\begin{lstlisting}[language=bash]
+$./print_argv.py 
+argv is a list of 1 elements: ['./print_argv.py']
+$./print_argv.py hello
+argv is a list of 2 elements: ['./print_argv.py', 'hello']
+$./print_argv.py hello 47
+argv is a list of 3 elements: ['./print_argv.py', 'hello', '47']
+$./print_argv.py hello 47 again?
+argv is a list of 4 elements: ['./print_argv.py', 'hello', '47', 'again?']
+$./print_argv.py hello 47 again? last_one333KK4..
+argv is a list of 5 elements: ['./print_argv.py', 'hello', '47', 'again?', 'last_one333KK4..']
+\end{lstlisting}
+
+\subsubsection{Type casting}
+
+There is an important concept in programmation: type casting. It allows one to change the type of a variable. The possible type of casts differ from one language to another.
+
+It is extra useful because some functions only take some kind of types as argument.
+
+Let us see some examples.
+
+\begin{lstlisting}[language=python,style=codestyle,title=example\_cast.py]
+#! /usr/bin/python3
+
+my_str = "37.3"
+print(my_str, "->", type(my_str))
+# Some casts are possible:
+print(list(my_str), "->", type(list(my_str)))
+print(float(my_str), "->", type(float(my_str)))
+
+# Some are impossible:
+print(int(my_str), "->", type(int(my_str)))
+\end{lstlisting}
+
+Executing it, we see that we can make a \texttt{str} become a \texttt{float} or a \texttt{list} but not an \texttt{int}:
+
+\begin{lstlisting}[language=bash]
+37.3 -> <class 'str'>
+['3', '7', '.', '3'] -> <class 'list'>
+37.3 -> <class 'float'>
+Traceback (most recent call last):
+  File "./example_cast.py", line 10, in <module>
+    print(int(my_str), "->", type(int(my_str)))
+ValueError: invalid literal for int() with base 10: '37.3'
+\end{lstlisting}
+
+Actually, the error lies in the fact that the \texttt{37.3} can be interpreted by python as a float because it looks like one, but not as an \texttt{int} because \texttt{int} have round values.
+
+Casting a \texttt{str} with a round value works:
+
+\begin{lstlisting}[language=python,style=codestyle,title=example\_cast\_again.py]
+#! /usr/bin/python3
+
+my_str = "37"
+print(my_str, "->", type(my_str))
+# list, float and int should work with this value:
+print(list(my_str), "->", type(list(my_str)))
+print(float(my_str), "->", type(float(my_str)))
+print(int(my_str), "->", type(int(my_str)))
+\end{lstlisting}
+
+Let us try:
+
+\begin{lstlisting}[language=bash]
+./example_cast_again.py 
+37 -> <class 'str'>
+['3', '7'] -> <class 'list'>
+37.0 -> <class 'float'>
+37 -> <class 'int'>
+\end{lstlisting}
+
+
+\subsection{Walkthrough}
+
+Now this part will not always be there but I am going to guide you on how to solve exercise 0:
+
+\subsubsection{Getting started}
+Navigate to the directory \texttt{exercise-0}:
+
+\begin{lstlisting}[language=bash]
+$cd lesson-1/subject/exercises/exercise-0/
+$ls
+run_tests.py*
+\end{lstlisting}
+
+Here, there is only one executable script. It allows you to run the tests. Let us try:
+
+\begin{lstlisting}[language=bash]
+$./run_tests.py 
+Test ['1', '2'] - FAILED
+--> Your script encountered an error: File not found. Make sure your script is correctly named
+\end{lstlisting}
+
+Oh, an error. Well, that makes sense, we did not provide our solution to the exercise. So, let us solve it then.
+
+\subsubsection{Working on the exercise}
+
+Let's create a new file named \texttt{biggest.py} and write our solution.
+
+\begin{lstlisting}[language=python,style=codestyle,title=biggest.py]
+#! /usr/bin/python3
+import sys # This import allows us to interact with the command line arguments
+
+# First, we declare a function which will do the comparison job
+def biggest(int1, int2):
+    if int1 > int2:
+        print(int1)
+    elif int2 > int1:
+        print(int2)
+    else:
+        print("The integers are equal")
+
+# Let's get the command line arguments
+first_int = int(sys.argv[1])
+second_int = int(sys.argv[2])
+
+# Now, call the function with the arguments previously retrieved
+biggest(first_int, second_int)
+\end{lstlisting}
+
+Now that the code seems good, let us test it manually.
+
+\begin{lstlisting}[language=bash]
+$chmod +x biggest.py
+$./biggest.py 20 3
+20
+$./biggest.py 7 11
+11
+$./biggest.py -1 7
+7
+\end{lstlisting}
+
+It looks fine, but is that enough? Let us launch the tests.
+
+\begin{lstlisting}[language=bash]
+$./run_tests.py
+Test ['1', '2'] - PASSED
+Test ['1123123', '2'] - PASSED
+Test ['-17', '13'] - PASSED
+Test ['0.3', '13'] - FAILED
+--> Your script encountered an error: 
+Traceback (most recent call last):
+  File "./biggest.py", line 14, in <module>
+    first_int = int(sys.argv[1])
+ValueError: invalid literal for int() with base 10: '0.3'
+\end{lstlisting}
+
+It seems that our script is not doing well with edge cases. This test just demonstrated that floating (e.g 1.7 or -3.1) numbers generate a \texttt{ValueError} in our code.
+The mission now is to handle all of the cases that we can think of and fix our script little by little.
+
+To handle this error case, we simply have to check that the casts of the arguments to \texttt{int} do not raise a \texttt{ValueError}:
+
+\begin{lstlisting}[language=python,style=codestyle,title=biggest.py]
+#! /usr/bin/python3
+import sys # This import allows us to access argv, the list containing the command line arguments
+
+# First, we declare a function which will do the comparison job
+def biggest(int1, int2):
+    if int1 > int2:
+        print(int1)
+    elif int2 > int1:
+        print(int2)
+    else:
+        print("The integers are equal")
+
+# Let's try to get the command line arguments
+try:
+    first_int = int(sys.argv[1])
+    second_int = int(sys.argv[2])
+    # Now, call the function with the arguments previously retrieved
+    biggest(first_int, second_int)
+except ValueError:
+    print("Usage: ./biggest.py integer1 integer2")
+\end{lstlisting}
+
+Running the tests again, we encounter another error on the number of arguments: this can be corrected by checking first that we are only given two additional arguments (the first one being the script filename, \texttt{biggest.py}).
+
+\begin{lstlisting}[style=codestyle,language=python,title=biggest.py]
+#! /usr/bin/python3
+import sys # This import allows us to access argv, the list containing the command line arguments
+
+# First, we declare a function which will do the comparison job
+def biggest(int1, int2):
+    if int1 > int2:
+        print(int1)
+    elif int2 > int1:
+        print(int2)
+    else:
+        print("The integers are equal")
+
+# Let's try to get the command line arguments
+try:
+    if len(sys.argv) != 3: # Actually, the target value is 3 because the first element of argv is always the name of the script
+        print("Usage: ./biggest.py integer1 integer2")
+    else:
+        first_int = int(sys.argv[1])
+        second_int = int(sys.argv[2])
+        # Now, call the function with the arguments previously retrieved
+        biggest(first_int, second_int)
+except ValueError:
+    print("Usage: ./biggest.py integer1 integer2")
+\end{lstlisting}
+
+Running the tests one last time will only display green success messages:
+\begin{lstlisting}[language=bash]
+./run_tests.py 
+Test ['1', '2'] - PASSED
+Test ['1123123', '2'] - PASSED
+Test ['-17', '13'] - PASSED
+Test ['0.3', '13'] - PASSED
+Test ['13'] - PASSED
+Test ['0.1'] - PASSED
+Test ['1', '2', '3', '-8'] - PASSED
+Test ['mdr', '3'] - PASSED
+Test ['0', '3'] - PASSED
+Test ['0.7', '1'] - PASSED
+Test ['19', '19'] - PASSED
+Test ['0.7', '0.3'] - PASSED
+
+All tests passed! Good job :). Make sure you did not forget any untested behavior
+\end{lstlisting}
+
+This exercise is completed. As asked in the exercise, we should now write a small text in a file named \texttt{README} explaining how our algorithm works and what were the pain points:
+
+\begin{lstlisting}[language=bash]
+$ls
+biggest.py*  README  run_tests.py*
+$cat README
+The goal of the exercise was to print the highest value of the command-line arguments.
+I had difficulties with sanitizing the user input and I solved it using type casting and by checking the number of arguments in argv.
+\end{lstlisting}
+
+This kind of development mindset is the one you should follow for the next exercises.
+
+\section{Exercise 1: max advanced}
+
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{biggest\_advanced.py}
+        \item[Online help:] Check out the following links for more documentation
+\begin{itemize}
+	\item Command line arguments: \href{https://docs.python.org/3.0/library/sys.html\#sys.argv}{Python3 official documentation}
+	\item Type conversion: \href{https://en.wikibooks.org/wiki/Python_Programming/Data_Types\#Type_conversion}{Wikibooks examples}
+\end{itemize}
+\end{description}
+      	
+You have to write a Python3 script that will take an arbitrary number of integer arguments and print the bigger one, followed by a line feed.
+
+In the case where all of the integers are the same, it should print one of them, followed by a line feed.
+
+In case of an error, it should print:
+
+\texttt{"Usage: ./biggest\_advanced.py integer1 integer2 [integer3]..."}, followed by a line feed.
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+The error cases are:
+
+\begin{itemize}
+	\item If there are less than two arguments
+	\item If the arguments are not integers
+\end{itemize}
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./biggest_advanced.py 3 17
+17
+./biggest_advanced.py 3 17 141
+141
+./biggest_advanced.py -1 77 -31 55
+77
+./biggest_advanced.py 3
+Usage: ./biggest_advanced.py integer1 integer2 [integer3]...
+./biggest_advanced.py 27 27 27
+27
+\end{lstlisting}
+
+
+\section{Exercise 2: Long long words}
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{longest\_words.py}
+        \item[Online help:] Check out the following links for more documentation
+	\begin{itemize}
+		\item \texttt{str.join()}: \href{https://docs.python.org/3.5/library/stdtypes.html\#str.join}{Python3 official documentation}
+	\end{itemize}
+\end{description}
+
+You have to write a Python3 script that will take an arbitrary number of \texttt{str} arguments and print the longest ones, separated by a comma,  in the order in which they appeared, followed by a line feed.
+
+In case of an error, it should print:
+
+\texttt{"Usage: ./longest\_word.py arg1 [arg2]..."}, followed by a line feed.
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+The error cases are:
+
+\begin{itemize}
+	\item If there are no argument
+\end{itemize}
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./longest_words.py bonjour ahbon
+bonjour
+$./longest_words.py abc def ghi
+abc,def,ghi
+$./longest_words.py baobab bonnet arbre
+baobab,bonnet
+$./longest_words.py 
+Usage: ./longest_words.py arg1 [arg2]...
+$./longest_words.py q w e r t y
+q,w,e,r,t,y
+\end{lstlisting}
+
+\section{Exercise 3: my\_range}
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{my\_range.py}
+        \item[Online help:] Check out the following links for more documentation
+	\begin{itemize}
+		\item \texttt{str.join()}: \href{https://docs.python.org/3.5/library/stdtypes.html\#str.join}{Python3 official documentation}
+		\item \texttt{range()}: \href{https://docs.python.org/3.5/library/stdtypes.html\#range}{Python3 official documentation}
+	\end{itemize}
+\end{description}
+
+You have to write a Python3 script that will take one to three integer arguments as input.
+It should then print the sequence of integers python's \texttt{range} function would generate, separated by spaces and followed by a line feed.
+
+In case of an error, it should print:
+
+\texttt{"Usage: ./my\_range.py int1 [int2] [int3]"}, followed by a line feed.
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+The error cases are:
+
+\begin{itemize}
+	\item If there are no argument
+	\item If there are more than three arguments
+	\item If the arguments are not integers
+\end{itemize}
+
+\textit{\textbf{Note:}} This is not a trivial exercise. Solve it little by little. First, simple cases, then more complicated cases and finally, edge cases.
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./my_range.py 1 10
+1 2 3 4 5 6 7 8 9
+$./my_range.py 1 10 1
+1 2 3 4 5 6 7 8 9
+$./my_range.py 1 10 2
+1 3 5 7 9
+4./my_range.py 10 1 -1
+10 9 8 7 6 5 4 3 2
+$./my_range.py 10 1
+
+$./my_range.py aaa
+Usage: ./my_range.py int1 [int2] [int3]
+\end{lstlisting}
+
+\section{Exercise 4: print\_first\_line}
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{print\_first\_line.py}
+        \item[Online help:] Check out the following links for more documentation
+	\begin{itemize}
+		\item \texttt{open()} prototype: \href{https://docs.python.org/3/library/functions.html\#open}{Python3 official documentation}
+		\item File object functions: \href{https://docs.python.org/3.5/library/io.html\#i-o-base-classes}{Python3 official documentation}
+		\item List of OS exceptions: \href{https://docs.python.org/3.5/library/exceptions.html\#os-exceptions}{Python3 official documentation}
+	\end{itemize}
+\end{description}
+
+You have to write a Python3 script that will take one string argument as input. The string argument should be the filepath to a file.
+
+Your script should read the file given as argument and print its first line, followed by a line feed. For this exercise, you can assume that the file will only contain ASCII characters.
+
+\begin{itemize}
+\item If the current user does not have sufficient permissions to read the file, print \texttt{"Unsufficient permissions"}, followed by a line feed.
+
+\item If the file does not exist, print \texttt{"The file does not exist"}, followed by a line feed.
+
+\item If another error is raised, print \texttt{"Unexpected error"}, followed by a line feed.
+
+\item If the number of arguments is different than 1, print the following usage, followed by a line feed: \texttt{"Usage: ./print\_first\_line.py filepath"}.
+\end{itemize}
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./print_first_line.py 
+Usage: ./print_first_line.py filepath
+$./print_first_line.py /etc/hosts aaa
+Usage: ./print_first_line.py filepath
+$./print_first_line.py /etc/hosts
+127.0.0.1	localhost
+
+$./print_first_line.py /etc/shadow
+Unsufficient permissions
+$./print_first_line.py ../tests_framework.py 
+from subprocess import run, PIPE, CalledProcessError, TimeoutExpired
+
+$./print_first_line.py resources/no_line_feed.txt 
+This is a file which does not end with a line feed.
+$./print_first_line.py resources/
+Unexpected error
+\end{lstlisting}
+
+\subsection{New notions}
+
+To complete this exercise, you need to know a few more things.
+
+\subsubsection{Files in UNIX}
+
+In UNIX, it is said that \textit{Everything is a file}\footnote{A view closer to reality would be to say that \textit{Everything is represented as a file in your filesystem}}.
+
+In fact, everything, from the status of the light of your "Caps lock" key to the configuration of your applications is either in a file, represented by a file of editable through a file or somewhere in your file system. By editing the right value in the right file, you can modify the light of your "Caps lock" key, for example!
+What is more, many applications keep their configuration in a file (often in \texttt{/etc}) and read it when booting.
+
+Knowing how to open, read and edit files programmatically is thus extremely important.
+
+\subsubsection{File descriptor}
+
+To be able to read or edit a file, one must first open it. Python provides an easy-to-use function to do that: \href{https://docs.python.org/3/library/functions.html\#open}{open()}.
+
+In UNIX, the function \texttt{open} usually returns a \textit{file descriptor}. A \textit{file descriptor} is simply an integer linked to a file allowing one to interact with it.
+Actually, you are lucky. Python is kinder than the raw system calls: its \texttt{open()} functions returns a \textit{file object}, which is basically a \textit{file descriptor} bundled with useful functions that you can invoke.
+
+File objects allow one to read or write to their corresponding file descriptor (and thus, to their corresponding file): \texttt{file\_object.readlines()} or \texttt{file\_object.write()} are perfect examples.
+The many functions allowing one to manipulate a file descriptor are findable here: \url{https://docs.python.org/3.5/library/io.html\#i-o-base-classes}.
+
+Let's see an example:
+
+\begin{lstlisting}[language=python,style=codestyle,title=test\_readlines.py]
+#! /usr/bin/python3
+
+# Open the file
+fo = open("/etc/hostname")
+# Read from the file object
+lines = fo.readlines()
+# Do not forget to close the file! Although Python will take care of it if you forget in most cases, it is generally bad to keep file descriptors hanging for no reason
+fo.close()
+
+# Now, print what we have read
+print(lines)
+\end{lstlisting}
+
+Launching it, we obtain:
+
+\begin{lstlisting}[language=bash]
+$./test_readlines.py
+['nicolas-laptop\n']
+\end{lstlisting}
+
+\subsubsection{Handling files: flags}
+
+Looking at the prototype of \texttt{open()}\footnote{\href{https://docs.python.org/3/library/functions.html\#open}{click here!}}, you may have noticed an optional \texttt{mode} argument, defaulting to \texttt{"r"}.
+
+This arguments indicates for what usage the file should be open.
+For example, if you need to read from a file, you should use the default mode \texttt{"r"}. If you want write to a file, you should use \texttt{"w"}. If you want to read raw \texttt{bytes} from a file, you should combine the read flag and the binary mode flag (\texttt{"rb"}).
+As you can see, you can combine them.
+
+There are other flags, read what they do. You will have to use them to solve the exercises.
+
+\subsubsection{Handling files: exceptions}
+
+The example we wrote worked like a charm for the file \texttt{/etc/hostname}. However, life is not always so good. There are many many (many!) reasons why your operating system would not let you peek into a file or write into a file.
+
+If \texttt{open} or the functions bundled with a file object fail because of your system, Python will raise an \texttt{OSError}.
+
+For example, if you do not have write permissions to a file but try to open it with the "w" flag, Python will raise a \texttt{PermissionError}.
+We say that \texttt{PermissionError} is a subclass of \texttt{OSError}: it is catchable using either \texttt{except PermissionError} or \texttt{except OSError}. The complete hierarchy of Python built-in exceptions is avaible at \href{https://docs.python.org/3.5/library/exceptions.html\#exception-hierarchy}{this link}.
+
+Let's see an example:
+
+\begin{lstlisting}[language=python,style=codestyle,title=restricted\_write.py]
+#! /usr/bin/python3
+
+# Open the file
+fo = open("/tmp/restricted_file.txt", "w")
+# Write to the file object
+fo.write("Hello")
+# Close the file
+fo.close()
+\end{lstlisting}
+
+Launching it, we obtain:
+
+\begin{lstlisting}[language=bash]
+$cat /tmp/restricted_file.txt 
+Yaaa
+$chmod -w /tmp/restricted_file.txt
+$ls -lh /tmp/restricted_file.txt 
+-r--r--r-- 1 nicolas nicolas 5 janv. 15 23:11 /tmp/restricted_file.txt
+$./restricted_write.py 
+Traceback (most recent call last):
+  File "./restricted_write.py", line 3, in <module>
+    fo = open("/tmp/restricted_file.txt", "w")
+PermissionError: [Errno 13] Permission denied: '/tmp/restricted_file.txt'
+\end{lstlisting}
+
+A simple way to catch this kind of issue is to wrap the dangerous calls around a simple \texttt{try}/\texttt{except}:
+
+\begin{lstlisting}[language=python,style=codestyle,title=restricted\_write\_safer.py]
+#! /usr/bin/python3
+
+# Open the file
+try:
+    fo = open("/tmp/restricted_file.txt", "w")
+    # Write to the file object
+    fo.write("Hello")
+    # Close the file
+    fo.close()
+except PermissionError:
+    print("Could not open file /tmp/restricted_file.txt: Permission denied!")
+\end{lstlisting}
+
+The exception is nicely catched:
+
+\begin{lstlisting}[language=bash]
+$./restricted_write_safer.py 
+Could not open file /tmp/restricted_file.txt: Permission denied!
+\end{lstlisting}
+
+Additionally, when one tries to perform non-allowed file object actions (like reading from a file opened in write mode), Python will raise a \texttt{io.UnsupportedOperation} (\url{https://docs.python.org/3.5/library/io.html\#io.UnsupportedOperation}).
+
+\subsubsection{Special trick to close files}
+
+Another way to open and close a file is to use a \textit{context manager}. It is done using the \texttt{with} keyword:
+
+\begin{lstlisting}[language=python,style=codestyle,title=context\_manager\_read.py]
+#! /usr/bin/python3
+
+# Open the file
+with open("/tmp/restricted_file.txt", "r") as fo:
+    print(fo.read(10)) # Print the first 10 characters of the file
+# When exiting the indented block, fo.close() is automatically called
+\end{lstlisting}
+
+It allows one to not bother about closing files. Also, it has another utility: if an exception is raised inside the block, the file will still be properly closed by the context manager.
+
+Last but not least, the syntax is way clearer than the standard one. You are strongly advised to use the \texttt{with} keyword, as the fact that files you open are properly closed will be tested.
+
+\section{Exercise 5: print\_first\_line\_better}
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{print\_first\_line\_better.py}
+        \item[Online help:] Check out the following links for more documentation
+	\begin{itemize}
+		\item \texttt{print()}'s prototype: \href{https://docs.python.org/3/library/functions.html\#print}{Python3 official documentation}
+	\end{itemize}
+\end{description}
+
+Because by default \texttt{print()} automatically inserts a line feed, if a file ends with a line feed too, we have a big interval in our terminal.
+
+You have to write a Python3 script that will do the exact same thing as the previous one, except that it should not add a line feed after printing the first line of a file.
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./print_first_line_better.py 
+Usage: ./print_first_line.py filepath
+$./print_first_line_better.py /etc/hosts aaa
+Usage: ./print_first_line.py filepath
+$./print_first_line_better.py /etc/hosts
+127.0.0.1	localhost
+$./print_first_line_better.py /etc/shadow
+Unsufficient permissions
+$./print_first_line_better.py ../tests_framework.py 
+from subprocess import run, PIPE, CalledProcessError, TimeoutExpired
+$./print_first_line_better.py resources/no_line_feed.txt 
+This is a file which does not end with a line feed.$./print_first_line_better.py resources/ # ^ Notice the difference?
+Unexpected error
+\end{lstlisting}
+
+\section{Exercise 6: hello}
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{hello.py}
+\end{description}
+
+You have to write a Python3 script that will take one string argument as input. The string argument should be the filepath to a file.
+
+Your script should append the string \texttt{hello} to the file given as argument.
+
+\begin{itemize}
+\item If the current user does not have sufficient permissions to write to the file, print \texttt{"Unsufficient permissions"}, followed by a line feed.
+
+\item If the file does not exist, the file should be created and contain \texttt{hello}.
+
+\item If the file is located in a folder which does not exist, print \texttt{"The file does not exist"}, followed by a line feed.
+
+\item If another error is raised, print \texttt{"Unexpected error"}, followed by a line feed.
+
+\item If the number of arguments is different than 1, print the following usage, followed by a line feed: \texttt{"Usage: ./hello.py filepath"}.
+\end{itemize}
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./hello.py 
+Usage: ./hello.py filepath
+$./hello.py /etc/hosts aaa
+Usage: ./hello.py filepath
+$cat mdr.txt
+cat: mdr: No such file or directory
+$./hello.py mdr.txt
+$cat mdr.txt
+hello$./hello.py mdr.txt
+$cat mdr.txt
+hellohello$./hello.py /etc/protocols
+Unsufficient permissions
+$./hello.py /tmp
+Unexpected error
+\end{lstlisting}
+
+\section{Exercise 7: print\_first\_bytes}
+\subsection{Goal}
+
+\begin{description}
+        \item[Script name:] \texttt{print\_first\_bytes.py}
+\end{description}
+
+You have to write a Python3 script that will take two string argument and an optional integer argument as input. The string arguments should be  the filepath to files. The first one should exist and the second one can not exist.
+
+Your script should copy the bytes of the first file to the second one. If a third integer argument is given, you should only copy the first \texttt{x} bytes of the source file.
+
+\begin{itemize}
+\item If the current user does not have sufficient permissions to access to a file, print \texttt{"Unsufficient permissions"}, followed by a line feed.
+
+\item If the destination file does not exist, it should be created.
+
+\item If the destination file already exists, it should be replaced.
+
+\item If another error is raised, print \texttt{"Unexpected error"}, followed by a line feed.
+
+\item If there are more than 3 arguments or if the third argument is not an integer or if there is less than 2 arguments, print the following usage, followed by a line feed:
+
+\texttt{"Usage: ./print\_first\_bytes.py src\_filepath dst\_filepath [int]"}.
+\end{itemize}
+
+Also, you are asked to provide a small file named \texttt{README} explaining how you solved the exercise.
+
+\subsection{Example}
+
+\begin{lstlisting}[language=bash]
+$./print_first_bytes.py /bin/ls test 4
+$cat test 
+ELF$./print_first_bytes.py /bin/ls my_own_ls
+$chmod +x my_own_ls 
+$./my_own_ls 
+my_own_ls  print_first_bytes.py  resources  run_tests.py
+$./print_first_bytes.py /bin/ls test abcd
+Usage: ./print_first_bytes.py src_filepath dst_filepath [int]
+$./print_first_bytes.py /bin/ls test 4 yoo
+Usage: ./print_first_bytes.py src_filepath dst_filepath [int]
+\end{lstlisting}
+
+\section{Evaluation}
+\subsection{Instructions}
+\newdate{duedate}{6}{02}{2019}
+
+You have to send a tarball (a \texttt{.tar}, not a \texttt{.zip} nor a \texttt{.rar}) of your work before \displaydate{duedate}, 23h59 at nikointhehood@gmail.com.
+
+The subject and the content of your email are not important but your tarball should follow the format \texttt{firstname\_lastname.tar.bz2} (of course, you have to replace \texttt{firstname} and \texttt{lastname} by yours).
+
+The command to work with tarballs is \texttt{tar}. To create one, use the following command:
+
+\begin{lstlisting}[language=bash]
+$ls
+subject/ tutorial/
+# c stands for create, v stands for verbose, f allows one to input a custom name for the archive and j indicates the usage of bzip2
+$tar cvfj firstname_lastname.tar.bz2 subject/
+(...)
+$ls
+subject/ tutorial/ firstname_lastname.tar.bz2
+\end{lstlisting}
+
+To verify that your archive contains everything you want, copy it somewhere else and decompress it:
+
+\begin{lstlisting}[language=bash]
+$ls
+firstname_lastname.tar.bz2  subject/  tutorial/
+$mkdir /tmp/test
+$cp firstname_lastname.tar.bz2 /tmp/test
+$cd /tmp/test
+# x stands for eXtract, v for verbose and f allows one to indicate which file tar should work with
+$tar xvf firstname_lastname.tar.bz2
+# You should see what I will obtain when extracting your archive
+$tree --charset=ascii
+.
+|-- firstname_lastname.tar.bz2
+`-- subject
+    |-- exercises
+    |   |-- exercise-0
+    |   |   |-- biggest.py
+    |   |   |-- README
+    |   |   `-- run_tests.py
+# (...)
+    |   |-- exercise-7
+    |   |   |-- print_first_bytes.py
+    |   |   |-- README
+    |   |   |-- resources
+    |   |   |   |-- hosts
+    |   |   |   |-- ls_only_4_original
+    |   |   |   |-- ls_only_4_target
+    |   |   |   |-- ls_only_50_original
+    |   |   |   |-- ls_only_50_target
+    |   |   |   |-- ls_original
+    |   |   |   |-- ls_target
+    |   |   |   `-- no_line_feed.txt
+    |   |   `-- run_tests.py
+    |   `-- tests_framework.py
+    `-- subject-1.tex
+
+14 directories, 49 files
+\end{lstlisting}
+
+\subsection{A word on cheating}
+
+You have to remember that you should be studying for your own good. Cheating will not bring you any good in the long term; it is fine not to be able to finish every exercise of the subject, your main goal is to train and learn things.
+
+Any form of cheating will immediately bring your grade down to 0. Additionally, your main teacher will be taken notice of that.
+
+A particular attention will be given to your \texttt{README} files.
+
+\textit{Note:} Changing the name of some variables will of course not trick the anti-cheat engine :)
+
+\end{document}

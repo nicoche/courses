@@ -1,0 +1,2 @@
+The goal of the exercise was to print the highest value of the command-line arguments.
+I had difficulties with sanitizing the user input and I solved it using type casting and by checking the number of arguments in argv.
