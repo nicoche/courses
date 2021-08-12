@@ -68,7 +68,7 @@
 \begin{titlepage}
 	\centering
     \vspace*{0.5 cm}
-    \includegraphics[scale = 0.3]{logo4.png}\\[1.0 cm]
+    \includegraphics[scale = 0.3]{resources/logo4.png}\\[1.0 cm]
     \textsc{\LARGE \newline\newline UNIX 101}\\[2.0 cm]
 	\textsc{\Large or "How to feel like a true hack3r"}\\[0.5 cm]
 	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
@@ -118,7 +118,7 @@ If you work thoroughfully, at the end of this tutorial, you should know:
 \begin{itemize}
 \item What is git
 \item Why it is important to know how to use git
-\item How to generate a SSH key and how to use SSH to communicate with a git server
+%\item How to generate a SSH key and how to use SSH to communicate with a git server
 \item How to clone a remote repository
 \item How to contribute to a repository
 \end{itemize}
@@ -129,7 +129,7 @@ If you work thoroughfully, at the end of this tutorial, you should know:
 You are going to need a UNIX-like operating system for this tutorial.
 A Linux distribution is preferred but a Mac can also do the job (OS X is a variant of FreeBSD).
 
-You also need the git binary to be installed on your system. If you have finished the first tutorial, you should know how to install it.
+You also need the git binary to be installed on your system. If you have finished the first tutorial, you should know how to install it\footnote{Check that it is installed with \texttt{which git}; if it is not, install it with \texttt{sudo apt install git}. If you had trouble with that, take some time to read again the previous tutorial}.
 
 
 \section{Git}
@@ -164,7 +164,7 @@ Just to highlight the popularity of these kind of tools, one needs to understand
 It has been created for the needs of developing the Linux kernel and has quickly become a standard in the industry. It is a core tool for any professional worker in information systems : code is everywhere and versioning it is mandatory for systems to keep working continuously. Even infrastructure configurations are versioned now.
 
 What is more, platforms like Github and Gitlab are rapidly raising in popularity. They provide developer/management tools on top of git: project management, automatic deployments, ticketing, etc. Most engineering teams use them on a daily basis.
-These are widely used by companies and individuals all around the world. For this tutorial, we are going to use a similar platform, Gitea, hosted on a dedicated server.
+These are widely used by companies and individuals all around the world. For this tutorial, we are going to use Github.%, Gitea, hosted on a dedicated server.
 
 \section{Theory}
 
@@ -185,27 +185,33 @@ Git does not perform anything automatically. The user has to explicitely tell it
 
 \begin{itemize}
 \item Files that are not known by git are \textbf{untracked}
+\item Files that are known by git but have not been modified are \textbf{unmodified}
 \item Files that are known by git but have been modified are \textbf{modified} (or \textbf{unstaged})
 \item Files that are known by git, have been modified and ready to be commited are \textbf{staged}
-\item Files that are known by git but have not been modified are \textbf{unmodified}
 \end{itemize}
 
 \subsection{Workflow}
 
 In practice, to create an history for a project, the user simply changes the state of the files as he creates content. He can record changes to the repository through \textbf{commits}.
 
+In modern software, generally, a new feature is all bundled in a \textbf{commit}. Then, each commit is more or less a logical change to the application. This is useful for many reasons. Here are two that I can think of from the top of my head:
+\begin{itemize}
+	\item At any moment, it makes it easy to look back in time and see when a feature has been implemented by checking the commit date associated with the feature
+	\item If a newly coded feature introduces a bug in the application, one can revert the commit. This undoes the code changes introduced by the commit while a bugfix can be safely developed
+\end{itemize}
+
 \subsubsection{Basic commands}
 
 The following commands can initialize a git repository
 \begin{itemize}
 \item \texttt{git init}: initialize an empty git repository in the working directory
-\item \texttt{git clone remote\_path}: clone a git repository from a remote place
+\item \texttt{git clone remote\_path}: download a git repository from a remote place
 \end{itemize}
 
 The following commands can change the state of files in a git repository:
 \begin{itemize}
-\item \texttt{git add filename...}: add file named \texttt{filename} to commit if it is untracked. Only adds changes to the previous version of that file if it is tracked
-\item \texttt{git commit [-m commit\_message]}: record staged files in a commit (with a optional commit message)
+\item \texttt{git add filename...}: add file named \texttt{filename} to commit if it is untracked. Only adds what changed since the previous version of that file if it is already tracked
+\item \texttt{git commit [-m commit\_message]}: record staged files in a commit (with an optional commit message)
 \item \texttt{git restore --staged file}: unstage file
 \item \texttt{git checkout file}: erase changes made to file since last commit\footnote{Useful when deleting stuff by mistake!}
 \item \texttt{git checkout commit|branch]}: "view" the state of the repository at some point of the history
@@ -221,7 +227,7 @@ The following commands help knowing the current state of a git repository:
 
 \subsubsection{So, how to commit?}
 
-The following snippets show an example of a simple git workflow. Read them carefully.
+The following snippets show an example of a simple git workflow. Read them carefully, then execute them on your workstation.
 
 \begin{lstlisting}[language=bash]
 $mkdir my_project # Creating a new directory
@@ -239,7 +245,7 @@ Untracked files:
 	my_code_file.py # This file is not known by git: it is untracked
 
 nothing added to commit but untracked files present (use "git add" to track)
-$git add my_code_file.py # Adding file to the current commit
+$git add my_code_file.py # Staging this file (= preparing to put it in a future commit)
 $git status # Showing the current state of the tree
 On branch master
 
@@ -247,7 +253,7 @@ No commits yet
 
 Changes to be committed:
   (use "git rm --cached <file>..." to unstage)
-	new file:   my_code_file.py # Our file has correctly been staged! Our commit is now ready :)
+	new file:   my_code_file.py # Our file has correctly been staged! Our commit is now ready to be made :)
 
 
 $git commit -m "Add code file with nothing inside" # Let's make a commit with our little file now
@@ -256,9 +262,9 @@ $git commit -m "Add code file with nothing inside" # Let's make a commit with ou
  create mode 100644 my_code_file.py
 $git status # Showing the current state of the tree
 On branch master
-nothing to commit, working tree clean # Indeed, we commited every change we made. Everything is up-to-date
+nothing to commit, working tree clean # Indeed, we commited every change we made. No file has been modified since the last commit so everything is up-to-date.
 $git log --oneline # Let us check the history
-33df133 (HEAD -> master) Add code file with nothing inside # Our commit is just there :)
+33df133 (HEAD -> master) Add code file with nothing inside # Our commit is just there. If we continue adding or modifying files and comitting them, we will have an history of all of our commits :)
 \end{lstlisting}
 
 We just initialized a git repository and made a commit with an empty file. Now let us say we modified the file and added some code inside. Let us see how to backup our work in a new commit.
@@ -281,23 +287,25 @@ index e69de29..5dbce8e 100644
 --- a/my_code_file.py
 +++ b/my_code_file.py
 @@ -0,0 +1,2 @@
-+def power_2(x): # The "=" indicates that we added this line
++def power_2(x): # The "+" indicates that we added this line
 +    return x * x # Same here
-$git add my_code_file.py # Let's add the file to our commit
+$git add my_code_file.py # Let's stage this file...
 $git status # Showing the current state of the tree
 On branch master
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
-	modified:   my_code_file.py # Our commit now contains modifications to my_code_file.py
-$git commit -m "Add power_2 function" # Not, commit!
+	modified:   my_code_file.py # We staged the modifications to my_code_file.py
+$git commit -m "Add power_2 function" # Now, commit!
 [master 2d2aa86] Add power_2 function
- 1 file changed, 2 insertions(+) # Git tells us what changed in the commit whe just made
+ 1 file changed, 2 insertions(+) # Git tells us what changed in the commit we just made
 $git log --oneline # Let's check out our history now...
 2d2aa86 (HEAD -> master) Add power_2 function # Latest commit
 0745a0b Add code file with nothing inside # First commit
 \end{lstlisting}
 
-Now let us say that, by mistake, we removed our code file. Git will help us restore it to the last state we saved it at.
+Good! We made a brand new commit. That is it for the basics. The workflow is: make some changes, stage those changes, commit that and repeat.
+
+Now let us see a real-life use case. Let us say that, by mistake, we removed our code file. Git will help us restore it to the last state we saved it at.
 
 \begin{lstlisting}[language=bash]
 $ls # No output: the directory is empty. Our code file has been deleted!
@@ -315,14 +323,16 @@ $ls
 my_code_file.py # It's back!
 \end{lstlisting}
 
-That example is fairly simple but it shows you most of the basic commands a git user executes daily. \texttt{git checkout} is especially useful to rollback the project to a working version, for example if a bug has been introduced by mistake in the newer versions of the project.
+Those examples are fairly simple but they show you most of the basic commands a git user executes daily. \texttt{git checkout} is especially useful to rollback the project to a working version, for example if a bug has been introduced by mistake in the newer versions of the project.
+
+Now, repeat those commands on your workstation.
 
 \subsubsection{Summing it all in a schema}
 
 The following image summarizes how to build commits.
 
 \begin{figure}[!h]\centering\captionsetup{}
-   \includegraphics[scale = 0.55]{git_workflow.png}
+   \includegraphics[scale = 0.55]{resources/git_workflow.png}
    \caption{Basic git workflow}
 \end{figure}
 
@@ -332,89 +342,96 @@ Remember when we said that git was a distributed tool that allowed people to col
 
 Actually, commits can be synchronized with a server. We will not cover it in details at all; for now you just need to now that if your git repository exists on a remote server you can \textbf{push} your tree to make your commits available to other collaborators and \textbf{pull} the latest commits made by other collaborators. The respective commands to perform these two actions are, surprisingly, \texttt{git push} and \texttt{git pull}.
 
+Think of it as a Google doc where you write stuff collaboratively: when you make changes, everybody can see them and when other make changes, you can see them. When you write code as a member of a team, you also want to share your code with your teammates and retrieve code changes from your teammates; most teams do it with git.
+
 \section{Practical exercises}
 
-You have been created an account and a custom repository on a \href{https://gitea.electrosenpai.dev}{Gitea server}. You will use it to play with git by yourself.
+%You have been created an account and a custom repository on a \href{https://gitea.electrosenpai.dev}{Gitea server}. You will use it to play with git by yourself.
+%
+%\subsection{Getting access}
+%
+%\subsubsection{Connection to the platform}
+%
+%First, visit \href{https://gitea.electrosenpai.dev}{https://gitea.electrosenpai.dev} and login using your email and your password.
+%
+%Then, change your password. Do not forget it as you will need it to reconnect to the platform in the future.
+%
+%Verify that you have been given access to a repository (it should be visible on the front page).
+%
+%\subsubsection{SSH access}
+%
+%The preferred way to communicate with a git remote (understand \textit{a repository online}) is through SSH. SSH is a protocol providing a secure communication channel between two hosts. It relies on symmetric and asymmetric cryptography.
+%
+%We are not going to dig into the details of that protocol as it would be out of scope for that tutorial. Instead, remember that we need to generate a private (\textbf{secret}) key and a public \textbf{not secret}) key and to communicate the public key to the git server.
+%
+%The following command will generate a 4096 bits RSA keypair:
+%
+%\begin{lstlisting}[language=bash]
+%$ssh-keygen -t rsa -b 4096
+%Generating public/private rsa key pair.
+%Enter file in which to save the key (/home/nicolas/.ssh/id_rsa): # Do not put anything here, it is the right place
+%Enter passphrase (empty for no passphrase): 
+%Enter same passphrase again:
+%Your identification has been saved in /home/nicolas/.ssh/id_rsa.
+%Your public key has been saved in /home/nicolas/.ssh/id_rsa.pub.
+%The key fingerprint is:
+%SHA256:pUuEbId+QRZgIE4Zu7fI/ZqViyISKJDV9nk4f9cLCh4 nicolas@nicolas-laptop
+%The key's randomart image is:
+%+---[RSA 4096]----+
+%|  ++..o.+.       |
+%| ooooo =         |
+%| oo. .=o+ .      |
+%|o  . o=o.+       |
+%|o . . .+S    .   |
+%|+. + . +E.. o .  |
+%|..o o o..+ o . . |
+%|o .  = .. .   .  |
+%|.. .+.o          |
+%+----[SHA256]-----+
+%\end{lstlisting}
+%
+%Following that command, the keys are put in your home, in the hidden folder \texttt{.ssh/}. The public key is the one with the \texttt{.pub} extension. As it is public, it can be shared with anyone without any risk. The private one is the one without extension. You should not touch that file.
+%
+%Now, copy the content of that public key file (you can use \texttt{cat /home/your\_name/.ssh/id\_rsa.pub} to get it). Then, put it in Gitea: browse \textit{Settings}, \textit{SSH / GPG Keys}, \textit{Manage SSH keys}, \textit{Add key}.
+%
+%The field \textit{Key name} does not matter. Put the key in \textit{Content}.
 
-\subsection{Getting access}
+\subsection{Git local configuration}
 
-\subsubsection{Connection to the platform}
-
-First, visit \href{https://gitea.electrosenpai.dev}{https://gitea.electrosenpai.dev} and login using your email and your password.
-
-Then, change your password. Do not forget it as you will need it to reconnect to the platform in the future.
-
-Verify that you have been given access to a repository (it should be visible on the front page).
-
-\subsubsection{SSH access}
-
-The preferred way to communicate with a git remote (understand \textit{a repository online}) is through SSH. SSH is a protocol providing a secure communication channel between two hosts. It relies on symmetric and asymmetric cryptography.
-
-We are not going to dig into the details of that protocol as it would be out of scope for that tutorial. Instead, remember that we need to generate a private (\textbf{secret}) key and a public \textbf{not secret}) key and to communicate the public key to the git server.
-
-The following command will generate a 4096 bits RSA keypair:
+Let us configure git. It should be installed in your machine by now.
 
 \begin{lstlisting}[language=bash]
-$ssh-keygen -t rsa -b 4096
-Generating public/private rsa key pair.
-Enter file in which to save the key (/home/nicolas/.ssh/id_rsa): # Do not put anything here, it is the right place
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again:
-Your identification has been saved in /home/nicolas/.ssh/id_rsa.
-Your public key has been saved in /home/nicolas/.ssh/id_rsa.pub.
-The key fingerprint is:
-SHA256:pUuEbId+QRZgIE4Zu7fI/ZqViyISKJDV9nk4f9cLCh4 nicolas@nicolas-laptop
-The key's randomart image is:
-+---[RSA 4096]----+
-|  ++..o.+.       |
-| ooooo =         |
-| oo. .=o+ .      |
-|o  . o=o.+       |
-|o . . .+S    .   |
-|+. + . +E.. o .  |
-|..o o o..+ o . . |
-|o .  = .. .   .  |
-|.. .+.o          |
-+----[SHA256]-----+
+$git config --global user.name "Firstname Lastname" # Put your own name here and do not forget the quotes!
+$git config --global user.email firstname.lastname@mail.com # Put your own name and email here
 \end{lstlisting}
 
-Following that command, the keys are put in your home, in the hidden folder \texttt{.ssh/}. The public key is the one with the \texttt{.pub} extension. As it is public, it can be shared with anyone without any risk. The private one is the one without extension. You should not touch that file.
-
-Now, copy the content of that public key file (you can use \texttt{cat /home/your\_name/.ssh/id\_rsa.pub} to get it). Then, put it in Gitea: browse \textit{Settings}, \textit{SSH / GPG Keys}, \textit{Manage SSH keys}, \textit{Add key}.
-
-The field \textit{Key name} does not matter. Put the key in \textit{Content}.
-
-\subsubsection{Git local configuration}
-
-Now, let us configure git. It should be installed in your machine by now.
-
-\begin{lstlisting}[language=bash]
-$git config --global user.name "Firstname Lastname"
-$git config --global user.email firstname.lastname@mail.com
-\end{lstlisting}
-
-The configuration will be saved in your home, in the hidden file \texttt{.gitconfig}. This is where git will look for user configuration, by default.
+The configuration will be saved in your home, in the hidden file \texttt{.gitconfig}. This is where git will look for user configuration, by default. Use \texttt{cat ~/.gitconfig} to see the file content. Confirm that the informations you entered earlier are correct.
 
 \subsection{Try out commands!}
 
 \subsubsection{Cloning the repository}
 
-You should now be able to clone the repository from Gitea. Go to the repository page and copy its SSH address. Then run \texttt{git clone ADDRESS}.
+We are going to use the popular "development platform" \href{https://github.com/}{Github}. This platform is the leader in the industry and millions of developers use it. Most engineering teams use either GitHub or a similar platform on a daily basis.
+Create an account there and verificate it by confirming your email.
 
-\begin{lstlisting}[language=bash]
-$git clone ssh://git@gitea.electrosenpai.dev/REPOSITORY_PATH.git
-Cloning into 'git-basics...
-The authenticity of host '[gitea.electrosenpai.dev]:2424 ([IP]:2424)' can't be established.
-ECDSA key fingerprint is SHA256:...
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '[gitea.electrosenpai.dev]:2424,[IP]:2424' (ECDSA) to the list of known hosts.
-remote: Enumerating objects: 3, done.
-remote: Countring objects: 100% (3/3), done.
-remote: Total 3 (delta 0), reused 0 (delta 0)
-Receiving objects: 100% (3/3), done.
-\end{lstlisting}
+Then, create a new repository: navigate to \href{https://github.com/new}{https://github.com/new} and write down \texttt{git-tutorial} as the name of the repository. Set the repository visibility to \textbf{Public}.
 
-Running \texttt{ls} should now show you a new directory in your filesystem:
+Once you are done, you should be able to clone the repository in your workstation. Open a terminal and run \texttt{git clone https://github.com/YOUR\_USERNAME\_HERE/git-tutorial.git}. You will be prompted for your Github username and password\footnote{We will not cover SSH access in this tutorial. If you know how to configure it, it is greatly advised to do it!}; enter them and use \texttt{ls}... You should see a new directory there! It is the git repository that you just created.
+
+%You should now be able to clone the repository from Gitea. Go to the repository page and copy its SSH address. Then run \texttt{git clone ADDRESS}.
+%
+%\begin{lstlisting}[language=bash]
+%$git clone ssh://git@gitea.electrosenpai.dev/REPOSITORY_PATH.git
+%Cloning into 'git-basics...
+%The authenticity of host '[gitea.electrosenpai.dev]:2424 ([IP]:2424)' can't be established.
+%ECDSA key fingerprint is SHA256:...
+%Are you sure you want to continue connecting (yes/no)? yes
+%Warning: Permanently added '[gitea.electrosenpai.dev]:2424,[IP]:2424' (ECDSA) to the list of known hosts.
+%remote: Enumerating objects: 3, done.
+%remote: Countring objects: 100% (3/3), done.
+%remote: Total 3 (delta 0), reused 0 (delta 0)
+%Receiving objects: 100% (3/3), done.
+%\end{lstlisting}
 
 \begin{lstlisting}[language=bash]
 $ls
@@ -422,11 +439,10 @@ git-tutorial
 $cd git-tutorial
 $git status
 On branch master
-Your branch is up to date with 'origin/master'.
 
-nothing to commit, working tree clean
-$ls
-README.md
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
 \end{lstlisting}
 
 
@@ -434,19 +450,20 @@ README.md
 
 You now have everything you need. We will not work on in-depth exercises as we only covered the basics of git but you now should be able to versionate code and push it to a repository.
 
-You are asked to
+You are asked to:
 
 \begin{itemize}
-\item Add at least 3 new files to the repository (1 per commit)
-\item Add your name to \texttt{README.md} and commit the changes
-\item Add a new file and modify it at least once (all modifications to the file should not be all contained in a single commit)
-\item Put the output of a successful \texttt{git diff} to a file (either copy/paste the output or use the command \texttt{git diff > my\_file} to put the output of \texttt{git diff} in a new file named \texttt{my\_file} 
-\item Push your commits to Gitea
+	\item Create a new empty file called \texttt{empty\_file\_1}. Stage it and commit it with a message indicating what the changes are. Repeat this 2 times (name the new files \texttt{empty\_file\_2} and \texttt{empty\_file\_3}).
+	\item Create a new file called \texttt{README.md}. Write your name inside. Stage the file and commit it with an appropriate message.
+	\item Create a new file called \texttt{modify\_me.txt}. Write \textit{2 + 2 = 5} inside. Stage the file and commit it. Then, edit the file, fix the mistake (\textit{2 + 2 = 4}). Stage those modifications and commit them with an appropriate message.
+	\item Push your commits to Github with the command \texttt{git push}.
 \end{itemize}
 
-\textbf{Bonus:} put the code from the last section of tutorial 1 in the repository and add features to it. For each feature, make a commit.
+\textbf{Bonus:} put the code from the last section of tutorial 1 in the repository and add features to it. It could be anything, from asking the name of the player and displaying it when he wins, to restricting the number of guesses the player can make. For each feature, make a commit. Do not forget to push when you are done.
 
+At any time, use \texttt{git status} to know what the current status of the repository is. Use \texttt{git log} to see the history of commits.
+After a successful push, you can visit the repository page at \href{https://github.com/YOUR\_USERNAME\_HERE/git-tutorial}{https://github.com/YOUR\_USERNAME\_HERE/git-tutorial}. Try it!
 
-\textit{Remember that at any time you can push your commits to the remote. You do not need to do it that the very end (you should not actually).}
+\textit{Remember that at any time you can push your commits to the remote. You do not need to do it that the very end. Do it as often as possible.}
 
 \end{document}

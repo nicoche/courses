@@ -43,8 +43,9 @@
 \usepackage{enumitem}
 \setlist{nosep}
 \usepackage{booktabs}
+\usepackage{tikz}                           % super package for complex and awesome drawing
 
-\title{Tutorial 1}								% Title
+\title{Tutorial}								% Title
 %\author{}								% Author
 \date{\today}											% Date
 
@@ -67,7 +68,7 @@
 \begin{titlepage}
 	\centering
     \vspace*{0.5 cm}
-    \includegraphics[scale = 0.3]{logo4.png}\\[1.0 cm]
+    \includegraphics[scale = 0.3]{resources/logo4.png}\\[1.0 cm]
     \textsc{\LARGE \newline\newline UNIX 101}\\[2.0 cm]
 	\textsc{\Large or "How to feel like a true hack3r"}\\[0.5 cm]
 	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
@@ -144,7 +145,7 @@ Of course, the shell does not understand random text input; it tries to interpre
 We will detail the syntax of a command later on.
 
 \begin{figure}[!h]\centering\captionsetup{}
-   \includegraphics[scale = 0.20]{terminal.png}
+   \includegraphics[scale = 0.20]{resources/terminal.png}
    \caption{This is what a terminal looks like}
 \end{figure}
 
@@ -217,7 +218,7 @@ lrwxrwxrwx   1 root root    30 déc.  23 19:05 vmlinuz.old -> boot/vmlinuz-4.15.
 That is quite a lot of information! The option \texttt{-l} allows one to get much more information than with a simple \texttt{ls}.
 
 To check out the full list of possible arguments you can use with ls, use the command \texttt{man ls}.
-The \texttt{man} command gives information about the command given as argument. From now on, this will be your best friend. \textbf{Before asking for help, always check out the manual}. The answer to your question will, in 90\% of the cases, be findable inside.
+The \texttt{man} command gives information about the command given as argument. From now on, this will be your best friend. You can quit the man by pressing \texttt{ESC}. \textbf{Before asking for help, always check out the manual}. The answer to your question will, in 90\% of the cases, be findable inside.
 
 Also, at the top of every man page is the prototype (\textit{"synopsys"}) of the command. It will help you figure out how you should call it, in which order the arguments can be put and which arguments are mandatory for the command to run.
 
@@ -274,13 +275,88 @@ A few other reasons as to why knowing how to work on a command line is important
 \end{itemize}
 
 
-\section{Core utilities}
+\section{Core filesystem utilities}
 
 Now that you have an idea on how to use commands and most importantly on where to find documentation, let us dig into the basics.
 In this section, you will learn how to navigate in your filesystem and how to alter it.
 Do not forget to take a look at the manual in case of doubt.
 
-\subsection{Filesystem navigation}
+Before we start using commands, please read thoroughfully the next section.
+
+\subsection{Absolute and relative paths}
+
+The most common use case for shells -and the one we are going to use the most during this tutorial- are interactive-mode shells. When opening a terminal, you are dropped in an interactive shell. When launched in interactive mode, the shell accepts commands, executes them and gives the user control back to run more commands. Additionally, in that mode, the shell maintains a state regarding the filesystem.
+
+The current working directory is hence something that can change depending on commands input by the user. One can "move" from one directory to an other and the shell will keep track of that.
+
+Now, directories and files can be referenced \textbf{in regards to the current directory} or \textbf{in regards to the root of the filesystem}. The former kind of reference is called \textbf{relative} and the latter \textbf{absolute}. An absolute path to a file or directory will stay the same, no matter what is the current directory of the shell; a relative one will depend on what is the current directory of the shell. Using absolute paths is often safer to use because you cannot get them wrong; however, they can get long, which makes them tiring to write down. Relative paths, on the other hand, are easier to write because shorter but can lead to mistakes. \newline
+
+\usetikzlibrary{trees,calc}
+\tikzset{
+    every node/.style={
+        draw=black,
+        thick,
+        anchor=west,
+        inner sep=2pt,
+        minimum size=1pt,
+    }
+}
+
+\begin{tikzpicture}[
+    grow via three points={
+        one child at (0.8,-0.7) and two children at (0.8,-0.7) and (0.8,-1.4)
+    },
+    edge from parent path={
+        ($(\tikzparentnode\tikzparentanchor)+(.4cm,0pt)$) |- (\tikzchildnode\tikzchildanchor)
+    },
+    growth parent anchor=west,
+    parent anchor=south west,% = \tikzparentanchor
+%   child anchor=west,%        = \tikzchildanchor
+%   every child node/.style={anchor=west}% already in "every node"
+  ]
+   \node { \textbf{/}}
+    child { node {home/}
+        child { node [draw=none] {main.html} }
+        child { node [label={[xshift=6.0cm, yshift=-0.58cm, color=gray] Let this be the working directory }] {nicolas/ }
+            child { node {work/}
+	      child { node [draw=none] {qcm.pdf}}
+	      child { node [draw=none] {tutorial.pdf}}
+	    }
+            child [missing] {}
+            child [missing] {}
+            child { node {videos/}}
+            child { node {photos/}}
+            child { node [draw=none] {\ldots}}
+        }
+        child [missing] {}
+    }
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child { node {boot/} }
+    child { node {tmp/} }
+    child { node {root/} }
+    child { node {bin/} }
+    child { node {etc/} }
+    child { node [draw=none] {\ldots}};
+    %child { node {release/}
+    %    child { node [draw=none] {libAwesome.a} }
+    %    child { node [draw=none] {libAwesome.dylib} }
+    %};
+\end{tikzpicture}
+
+Considering this example of filesystem, for a shell with its working directory being \texttt{/home/nicolas/}, there are two possible ways to reference the tutorial file:
+\begin{itemize}
+\item Absolute path: \texttt{/home/nicolas/work/tutorial.pdf}
+\item Relative path: \texttt{./work/tutorial.pdf}
+\end{itemize}
+
+\subsection{Filesystem navigation commands}
 
 Let us review the commands that allow you to move around your filesystem.
 
@@ -479,7 +555,7 @@ Great, we have seen many things. But we are still not able to edit files. Let us
 
 \subsection{File editor}
 
-There are many file editors\footnote{We will not discuss IDEs in this tutorial} available in Linux and Mac OS. Pick one in the following list.
+There are many file editors\footnote{We will not discuss IDEs in this tutorial} available in the terminal world. Pick one in the following list.
 
 \begin{description}
 	\item[vim:] This is a highly configurable text editor. It is lightweight and designed to optimize writing code. There is an incredible set of shortcut and commands to your disposal, which allow you to do tons of advanced things.
@@ -495,21 +571,44 @@ There are many file editors\footnote{We will not discuss IDEs in this tutorial} 
 	\item[sublimeText:] Very similar to Atom, but in general faster.
 \end{description}
 
-If you do not feel comfortable learning how to use an in-terminal text editor like vim, my advice for you is to pick either \textbf{Atom} or \textbf{sublimeText}.
-However, it is important for you to know the basics of either \textbf{vim} or \textbf{nano}, because sometimes, you do not have access to a graphical interface and an in-terminal editor is necessary.
+\subsection{Choose your fighter!}
 
-\subsection{Installation}
+If you do not feel at ease and want to go for the easiest thing, go for \textbf{gedit}.
+
+If you feel adventurous and wish to take the difficult path, go for \textbf{vim}. Knowing how to do basic stuff with this tool is always useful as pretty much every UNIX machine in the world has at least an editor like vim available\footnote{Useful when you have are controling a server remotely and only have access to a terminal!}. You can get away with it with using vim with the following tips:
+
+\begin{itemize}
+\item Do not use the mouse, it will not work well
+\item Upon opening a file, hit \texttt{i} to begin writing text: you will enter insert mode
+\item When you are done and want to quit, hit \texttt{ESC}, then write \texttt{:wq} to save\&quit or \texttt{:q!} to quit without saving
+\item Pay attention to the mode you are currently in: if it is written \texttt{INSERT} at the bottom left of the screen, that means that you are in insert mode and you can type text. If it is written something else, hit \texttt{ESC} to go back the default mode
+\end{itemize}
+
+If you do not feel comfortable learning how to use an in-terminal text editor like vim, but still want to use something sophisticated, my advice for you is to pick either \textbf{Atom} or \textbf{sublimeText}.
+
+\subsection{You chose gedit or nano!}
 
 Chances are that \textbf{nano} and \textbf{gedit} are already installed in your system. To check, simply use the command \texttt{which}. This command allows one to get the location of the program.
 
 \begin{lstlisting}[language=bash]
 $which nano
 /bin/nano
+$which gedit
+/usr/bin/gedit
+\end{lstlisting}
+
+You are ready to edit files! You can skip the next sections dealing with text editors. Still, read the content of those as they contain information that you need to know.
+
+\subsection{You chose vim!}
+
+Chances are that \textbf{vim} is not installed in your system. To check, simply use the command \texttt{which}. This command allows one to get the location of the program.
+
+\begin{lstlisting}[language=bash]
 $which vim
 $
 \end{lstlisting}
 
-As you can see, nano is installed in my system while vim is not.
+As you can see, \texttt{which} prints nothing, so that means that the command \texttt{vim} is not found by your shell. It most likely means that the program is not installed.
 This is the perfect opportunity to learn how to install programs in UNIX-like systems!
 
 \subsubsection{Package manager}
@@ -519,7 +618,6 @@ A package is simply an archive containing source code and/or applications.
 
 Ubuntu's default packet manager is \texttt{apt}. Mac OS does not have one, but you can install \texttt{brew}\footnote{\url{https://brew.sh/}}.
 
-Keep in mind that not every program is available in the official package repositories. Hence, \textbf{Atom} and \textbf{sublimeText} are not available on Ubuntu repositories. In the following example, we will use \texttt{apt} to install vim. We will detail in the next subsection how to manually install a software.
 
 A look at the man indicates us that we can install a package using \texttt{apt install package\_name} (\texttt{brew install package\_name} for Mac users).
 
@@ -533,9 +631,9 @@ $
 Oops, that did not work. It seems that we do not have sufficient permissions! We can bypass this using the \texttt{sudo} command. It allows one to launch commands as administrator (\textit{root}). Keep this in mind, we will talk about permissions in the next section.
 
 \begin{lstlisting}[language=bash]
+# Note: while typing your password, nothing gets printed to the screen. Don't panic, that's normal, simply type your password and hit enter :)
 $sudo apt install vim
-[sudo] password for nico: 
-Reading package lists... Done
+[sudo] password for nico: Reading package lists... Done
 Building dependency tree       
 Reading state information... Done
 The following additional packages will be installed:
@@ -563,6 +661,10 @@ Great, it worked!
 Refer to the manual for more information on \texttt{apt} (how to remove packages, how to upgrade software and how to update the list of available packages).
 
 \subsubsection{Installing packages manually}
+
+In the previous section, we studied how to install programs with \texttt{apt} or \texttt{brew}.
+
+Keep in mind that not every program is available in the official package repositories. This is the case for \textbf{Atom} and \textbf{sublimeText}. We will detail in this section how to manually install a software.
 
 So, let us say we want to install \textbf{Atom} on a fresh Ubuntu system.
 
@@ -609,8 +711,11 @@ Now that your favorite editor is installed, simply invoke it with the name of th
 
 \begin{lstlisting}[language=bash]
 $cd Documents
+# This works with gedit and all the other tools. Simply replace "vim" by the name of your text editor
 $vim my_document
+# Now, either a pop-up appears or your terminal is replaced by the text editor. In most cases you CANNOT use your terminal until the text editor is closed
 (...editing...)
+# Once you save your modifications and close the text editor, you can re-use your terminal
 $cat my_document 
 Hello!
 $
@@ -670,7 +775,7 @@ Linking that distinction to the mechanism of file permissions, a file in your fi
 This "triple triplet" is in the following order: \textit{user, group, others}.
 
 \begin{figure}[!h]\centering\captionsetup{}
-   \includegraphics[scale = 0.65]{permissions.png}
+   \includegraphics[scale = 0.65]{resources/permissions.png}
    \caption{Permissions of a file}
 \end{figure}
 
@@ -680,7 +785,7 @@ The \texttt{-l} option of \texttt{ls} allows one to show files in the \textit{lo
 
 \begin{figure}[!h]\centering\captionsetup{}
    \includegraphics[scale = 0.65]
-{llformat.png}
+{resources/llformat.png}
    \caption{Long listing format}
 \end{figure}
 
