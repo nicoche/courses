@@ -1,0 +1,449 @@
+ \documentclass[12pt]{article}
+%\usepackage[portuguese]{babel}
+\usepackage{natbib}
+\usepackage[hyphens]{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{vmargin}
+\setmarginsrb{1.5 cm}{2.5 cm}{1.5 cm}{2.5 cm}{1 cm}{1.5 cm}{1 cm}{1.5 cm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\let\oldhref\href
+\renewcommand{\href}[2]{\oldhref{#1}{\bfseries#2}}
+
+\usepackage[bottom]{footmisc}
+\usepackage{caption}
+\DeclareCaptionFormat{sanslabel}{#3}%
+\usepackage[section]{placeins}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{medium-gray}{gray}{0.5}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue},
+  backgroundcolor=\color{light-gray},
+  breaklines=true,
+  extendedchars=true,
+  literate={é}{{\'e}}1
+}
+\lstset{aboveskip=15pt,belowskip=15pt}
+\usepackage[autostyle]{csquotes}  
+\def\labelitemi{--}
+\usepackage{enumitem}
+\setlist{nosep}
+\usepackage{booktabs}
+\usepackage{datetime}
+\lstdefinestyle{codestyle}{
+    numbers=left,
+    numbersep=10pt,
+    numberstyle=\color{medium-gray}
+}
+
+% Quoting magic to have the Author of the quote after the actual quote
+\let\oldquote\quote
+\let\endoldquote\endquote
+\renewenvironment{quote}[2][]
+  {\if\relax\detokenize{#1}\relax
+     \def\quoteauthor{#2}%
+   \else
+     \def\quoteauthor{#2~---~#1}%
+   \fi
+   \oldquote}
+  {\par\nobreak\smallskip\hfill(\quoteauthor)%
+   \endoldquote\addvspace{\bigskipamount}}
+
+
+\title{myps}								% Title
+%\author{}								% Author
+\date{\today}											% Date
+
+\makeatletter
+\let\thetitle\@title
+%\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+\pagestyle{fancy}
+\fancyhf{}
+%\rhead{\theauthor}
+\lhead{\thetitle}
+\cfoot{\thepage}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+	\centering
+    \vspace*{0.5 cm}
+    \includegraphics[scale = 0.3]{resources/logo4.png}\\[1.0 cm]
+    \textsc{\LARGE \newline\newline UNIX 101}\\[2.0 cm]
+	\textsc{\Large or "How to feel like a true hack3r"}\\[0.5 cm]
+	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
+	{ \huge \bfseries \thetitle}\\
+	\rule{\linewidth}{0.2 mm} \\[1.5 cm]
+	
+    \thedate
+    
+    
+    
+	
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Foreword}
+\subsection{Objective}
+
+Welcome to myps!
+The goal of this subject is to dig into Linux concepts by rewriting some functionalities of the popular command line tool \texttt{ps}.
+
+\subsection{Notions required}
+
+Before digging into the subject, here are the pre-requisite. Make sure you can do the following things:
+
+\begin{itemize}
+\item Use a terminal, run commands on a UNIX environment
+\item Code simple programs
+\item Navigate in a UNIX filesystem
+\item Create commits and push code to a distant git repository
+\item Code simple CLI applications
+\end{itemize}
+
+
+\section{Setup}
+
+You need a Linux machine, a text editor and a working development environment.
+
+Any language can work; if you need guidance on eithr Python or C, check out the following sections. They briefly go over the installation of the tools you need to start working.
+
+\subsection{Python}
+
+If python3.5 (or more) is not installed, run \texttt{sudo apt install python3-pip}. That should be enough to install an interpretor.
+
+\subsection{C}
+
+To make sure you have everything set up, run \texttt{sudo apt install gcc binutils make}. That should be enough.
+
+\section{Evaluation}
+\subsection{Instructions}
+\newdate{duedate}{8}{01}{2020}
+
+You can do this project alone or can constituate a team of up to 5 persons. You will be graded orally on the quality of your code, the number of level passed  and the quality of your explanation regarding your work.
+
+You have to deliver your code before \displaydate{duedate}, 7:00 AM.
+
+\subsection{Expected output}
+
+The expected output is a git repository, hosted on a public platform like Github. The repository should host code that either compiles to a \texttt{myps} binary or that can be interpreted through a \texttt{./myps.<extension>} entrypoint, where \texttt{<extension>} is th extension of the programming language (e.g. \texttt{py}).
+
+\subsection{A word on cheating}
+
+You have to remember that you should be studying for your own good. Cheating will not bring you any good in the long term; it is fine not to be able to finish every exercise of the subject, your main goal is to train and learn things.
+
+Any form of cheating will immediately bring your grade down to 0. Additionally, your main teacher will be taken notice of that.
+
+\textit{Note:} Changing the name of some variables will of course not trick the anti-cheat engine :)
+
+\section{Subject}
+
+\subsection{Objective}
+
+The goal of this subject is to rewrite some functionalities of \texttt{ps(1)}. Recoding elementary UNIX utilities is an incredibly effective way to learn more about UNIX systems inner workings.
+
+This subject will make you learn in-depth notions regarding Linux processes: pid, parenting, processes statuses, etc. Also, you will learn about the /proc/ filesystem, an API to the Linux kernel.
+
+
+\subsection{Walkthrough}
+
+The subject is delimited in levels. The first levels are pre-requisite so you can build \texttt{myps} core features. The mid-levels are the main features of \texttt{myps}. The last levels describe more difficult features. Sections labelled \textbf{Bonus} are optional.
+
+Levels should be completed one after another. Commit often, push often, ask for help whenever you are blocked.
+
+\subsection{How does ps work?}
+
+The goal of this subject is to understand how ps work by rewriting it. However, we will cover the fundamentals in this section so you know where to begin and where to look for information.
+
+\texttt{ps(1)} is a program written in C. Its goal is to display to the user information regarding the currently running processes on the system. To keep things simple, we can consider that a process is an instance of a program.
+The information that \texttt{ps(1)} can display include the likes memory usage, process identifiers (PIDs), CPU time used since process launch, etc. It is a widely used tool in the UNIX world and you may have already used it.
+
+\texttt{ps(1)} runs without specific permissions; yet, it can grab so much information! It looks complicated, but in reality, that program is merely an interface. In fact, its only made of around 10 000 lines of code! Processes information is made available by the kernel and the sole job of \texttt{ps(1)} is to gather them and format them nicely for the user.
+
+There are a few APIs that the kernel exposes. The one that \texttt{ps(1)} uses (and that you are going to use to) is the \texttt{/proc/} filesystem. It is a pseudo-filesystem which provides an interface to kernel data structures. To keep things simple, think about it as some kind of data store where useful kernel information is readable.
+This information is made available through files that you can read in \texttt{/proc/*}. Try it!
+
+\begin{lstlisting}[language=bash]
+$ls /proc/
+ls /proc/
+1     1606  21    25    299  4    439  623  80         bus        execdomains  key-users    misc          self           tty
+10    17    2126  2532  30   414  468  659  81         cgroups    fb           keys         modules       slabinfo       uptime
+1017  18    2128  2551  308  417  471  668  82         cmdline    filesystems  kmsg         mounts        softirqs       version
+11    19    2129  2552  309  422  476  675  822        consoles   fs           kpagecgroup  mtrr          stat           version_signature
+116   2     22    26    32   423  525  7    83         cpuinfo    interrupts   kpagecount   net           swaps          vmallocinfo
+12    20    2203  27    34   424  6    716  89         crypto     iomem        kpageflags   pagetypeinfo  sys            vmstat
+13    203   2204  274   35   425  618  78   9          devices    ioports      loadavg      partitions    sysrq-trigger  zoneinfo
+14    204   23    28    356  426  619  79   98         diskstats  irq          locks        sched_debug   sysvipc
+15    205   2378  29    357  437  620  798  acpi       dma        kallsyms     mdstat       schedstat     thread-self
+16    208   24    298   36   438  622  8    buddyinfo  driver     kcore        meminfo      scsi          timer_list
+\end{lstlisting}
+
+You may have already used the command \texttt{uptime(1)}. It gives you the information on how long the system has been up and running since last reboot.
+
+\begin{lstlisting}[language=bash]
+$uptime
+ 00:13:09 up 14:59,  1 user,  load average: 0.00, 0.00, 0.00
+\end{lstlisting}
+
+Now, notice how there is a file named \texttt{/proc/uptime}. If we read its content, we obtain this:
+\begin{lstlisting}[language=bash]
+$cat /proc/uptime
+54049.70 53908.20
+\end{lstlisting}
+
+By reading the man page of \texttt{procfs} (\texttt{man procfs}), the documentation indicates that \textit{this file contains two numbers (values in seconds): the uptime of the system (including time spent in suspend) and the amount of time spent in the idle process}.
+
+There is a pretty good chance that we can rewrite the program \texttt{uptime} by reading that file.
+
+This is just an example of what kind of information \texttt{/proc/} exposes. It contains directories named after numbers. Those numbers reference processes identifiers (pid). Inside each directory, there are files containing information related to the given pid. Those are read by \texttt{ps(1)} to report information. This is the magic behind \texttt{ps(1)}.
+
+\subsection{Reference documentation}
+
+\begin{itemize}
+	\item \href{https://man7.org/linux/man-pages/man5/procfs.5.html}{procfs documentation}: Your main entry point to understand what files reference what in the \texttt{/proc} filesystem
+	\item \href{https://man7.org/linux/man-pages/man1/ps.1.html}{ps man page}: Your main entry point regarding \texttt{ps(1)} options
+	\item \href{https://gitlab.com/procps-ng/procps/-/blob/master/ps/}{ps source code}: I do not recommend using it unless for very specific use cases. It is difficult to read and understand, so only take a look there if you are desperate
+\end{itemize}
+
+\subsection{Ready?}
+
+Your goal is to write a program that works like \texttt{ps(1)}. We will start small and add features level by level. At all times, you should be able to compare your program with the official one, for the features you recoded. They should behave the exact same way. Ensuring that \texttt{myps} behaves exactly like \texttt{ps(1)} will allow you to know if you are on the right track, debug some features and brag about your skills!
+
+\subsection{Level 1: Columns and padding}
+
+\subsubsection{Objective}
+
+The goal of this level is to code the building blocks of your program. Your program may correctly retrieve processes information, if it cannot display it correctly, it is all for nothing.
+
+Your goal is to implement the \texttt{-o} option of \texttt{ps(1)}. \texttt{ps -o} allows one to select which columns should be displayed. By default, \texttt{ps} displays the columns PID, TTY, TIME and CMD:
+
+\begin{lstlisting}[language=bash]
+$ps
+  PID TTY          TIME CMD
+ 2204 pts/0    00:00:00 bash
+ 2566 pts/0    00:00:00 ps
+\end{lstlisting}
+
+Explicitely setting the \texttt{-o} option selects which columns are going to be printed out:
+
+\begin{lstlisting}[language=bash]
+$ps -o pid,time
+  PID     TIME
+ 2204 00:00:00
+ 2568 00:00:00
+\end{lstlisting}
+
+To pass this level, you should write a program that accepts the \texttt{-o} option. It authorized column names are, for now, PID, PPID and CMD.
+
+As our program does not yet retrieve processes information, no data should be displayed under column names.
+
+\subsubsection{Example usage}
+
+\begin{lstlisting}[language=bash]
+$./myps -o pid
+  PID
+$./myps -o pid,ppid
+  PID  PPID
+$./myps -o pid,ppid,command
+  PID  PPID COMMAND
+$./myps -o pid,command,ppid
+  PID COMMAND                      PPID
+\end{lstlisting}
+
+
+\subsubsection{Help}
+
+Notice the padding? Each column has its own padding rules.
+
+The reference can be found in the source code, \href{https://gitlab.com/procps-ng/procps/-/blob/master/ps/output.c\#L1479}{here}. The \textit{width} column indicates how many characters long the column should be. The \textit{RIGHT} mention indicates that the column should be padded to the right. A \textit{LEFT} mention or no mention at all seems to indicate that the column should be padded to the left. The rule of thumb seems to be "pad left for text" and "pad right for numbers".
+
+In the example, PPID is has a width of 5 and is padded to the right. On the other hand, COMMAND has a width of 27 and is padded to the left.
+
+\subsubsection{Bonus}
+
+If you play with \texttt{ps(1)} a bit, you can notice that a column's padding behave differently if it the last column displayed. Find out what the rule is and implement it.
+
+\subsection{Level 2: Display a specific process information}
+
+Now that we can output some columns, we will implement the \texttt{-p} option. \texttt{-p} gives information on a given process, identified by its pid. You are not asked to handle the case where multiple pids are given to \texttt{-p} (e.g. \texttt{ps -p 1,10})
+
+\begin{lstlisting}[language=bash]
+$ ps -p 1
+  PID TTY          TIME CMD
+    1 ?        00:00:01 systemd
+\end{lstlisting}
+
+Since we did not recode the TTY, TIME and CMD information retrieval, you are only asked to print relevant information for the PID column. Typically, your program should handle this kind of invocations: \texttt{ps -p <PID> -o pid}.
+If the given pid does not relate to a running process, only print the column names.
+
+\subsubsection{Example usage}
+
+\begin{lstlisting}[language=bash]
+$ps -p 1 -o pid
+  PID
+    1
+$ps -o pid -p 10
+  PID
+   10
+$ps -p 1111111 -o pid
+  PID
+\end{lstlisting}
+
+You are asked to print relevant information only for the \textbf{PID} column.
+
+\subsection{Level 3: Parent pid}
+
+To validate this level, the \texttt{-o} option of your program should handle the \texttt{ppid} argument. Typically, your program should handle this kind of invocations: \texttt{ps -p <PID> -o pid,ppid}.
+
+When in doubt with what the implementation should be, refer to \texttt{ps(1)}. The information you look for should live somewhere in \texttt{/proc/<pid>/}. Refer to \texttt{procfs(5)}.
+
+\subsubsection{Example usage}
+
+\begin{lstlisting}[language=bash]
+$ps -o pid,ppid -p 10
+  PID  PPID
+   10     2
+$ps -o pid,ppid -p 1
+  PID  PPID
+    1     0
+$ps -o ppid,pid -p 1
+ PPID   PID
+    0     1
+$ps -o pid,ppid -p 1
+  PID  PPID
+    1     0
+$ps -o ppid -p 10
+ PPID
+    2
+\end{lstlisting}
+
+\subsection{Level 4: Command column}
+
+Similarly to last level, you are asked to handle the \texttt{command} argument for the \texttt{-o} option. Beware, \texttt{-o command} is different from \texttt{-o cmd}! In case of doubt, once again, refer to \texttt{ps(1)}'s behavior.
+
+\subsubsection{Example usage}
+
+\begin{lstlisting}[language=bash]
+$ps -o pid,ppid,command -p 3809
+  PID  PPID COMMAND
+ 3809  3705 sshd: vagrant@pts/0
+$ps -o pid,ppid,command -p 10
+  PID  PPID COMMAND
+   10     2 [migration/0]
+$ps -o pid,ppid,command -p 1
+  PID  PPID COMMAND
+    1     0 /sbin/init
+$ps -o pid,command,ppid -p 5
+  PID COMMAND                      PPID
+$ps -o pid,command,ppid -p 6
+  PID COMMAND                      PPID
+    6 [mm_percpu_wq]                  2
+$ps -o command,ppid,pid -p 3809
+COMMAND                      PPID   PID
+sshd: vagrant@pts/0          3705  3809
+$ps -o command,ppid,pid -p 3915
+COMMAND                      PPID   PID
+bash -c while true ;do slee  3810  3915
+\end{lstlisting}
+
+\subsubsection{Help}
+
+\begin{itemize}
+	\item Notice how the command is sometimes displayed with \textbf{[} \& \textbf{]} while sometimes it is not.
+	\item Notice how the value of \textit{command} is truncated in the last example.
+\end{itemize}
+
+\subsection{Level 5: Display multiple processes}
+
+To pass this level, you are asked to fully implement the \texttt{-p} flag so it can be given multiple pids.
+
+\subsubsection{Example usage}
+
+\begin{lstlisting}[language=bash]
+$ps -o pid,ppid,command -p 1,10
+  PID  PPID COMMAND
+    1     0 /sbin/init
+   10     2 [migration/0]
+$ps -o pid,ppid,command -p 1,10,88888
+  PID  PPID COMMAND
+    1     0 /sbin/init
+   10     2 [migration/0]
+\end{lstlisting}
+
+\subsection{Level 6: Display all processes!}
+
+To pass this level, you are asked to implement the \texttt{-e} flag. This flag makes \texttt{ps(1)} display information on \textbf{all} currently running processes.
+
+\subsubsection{Example usage}
+
+\begin{lstlisting}[language=bash]
+$ps -e -o pid,ppid,command | tail -n 10
+ 1102     1 /lib/systemd/systemd --user
+ 1103  1102 (sd-pam)
+ 1598   696 sshd: vagrant [priv]
+ 1686  1598 sshd: vagrant@pts/1
+ 1687  1686 -bash
+ 1811     2 [kworker/u2:0]
+ 1886     2 [kworker/u2:1]
+ 1985     2 [kworker/u2:2]
+ 1986  1687 ps -e -o pid,ppid,command
+ 1987  1687 tail -n 10
+\end{lstlisting}
+
+\subsection{Level 7: Display processes related to the current terminal}
+
+To pass this level, you are asked to implement the behavior when neither \texttt{-e} is given nor \texttt{-p}. In this case, \texttt{ps(1)} displays process information related to the processes related to the current terminal
+
+\subsubsection{Example usage}
+
+\begin{lstlisting}[language=bash]
+$ps -o pid,command
+  PID COMMAND
+ 1687 -bash
+ 2039 ps -o pid,command
+$while true ; do sleep 1 ; done &
+[1] 2040
+$ping 8.8.8.8  > /dev/null &
+[2] 2068
+$ps -o pid,command
+  PID COMMAND
+ 1687 -bash
+ 2040 -bash
+ 2068 ping 8.8.8.8
+ 2075 sleep 1
+ 2076 ps -o pid,command
+\end{lstlisting}
+
+\subsection{Level 8 and beyond (bonus)}
+
+With all the work you have done, you pretty much have a minimal \texttt{ps(1)}. In fact, most of the times, when we use \texttt{ps(1)}, we are looking for the output of the command \texttt{ps -e -o pid,command}, which we implemented in level 6.
+
+From now on, you can add features to your program! Each \texttt{-o} column or additional flag implemented is a way to learn new things on the Linux kernel!
+
+\end{document}

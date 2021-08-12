@@ -1,0 +1,359 @@
+ \documentclass[12pt]{article}
+%\usepackage[portuguese]{babel}
+\usepackage{natbib}
+\usepackage[hyphens]{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{vmargin}
+\setmarginsrb{1.5 cm}{2.5 cm}{1.5 cm}{2.5 cm}{1 cm}{1.5 cm}{1 cm}{1.5 cm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\let\oldhref\href
+\renewcommand{\href}[2]{\oldhref{#1}{\bfseries#2}}
+
+\usepackage[bottom]{footmisc}
+\usepackage{caption}
+\DeclareCaptionFormat{sanslabel}{#3}%
+\usepackage[section]{placeins}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{medium-gray}{gray}{0.5}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue},
+  backgroundcolor=\color{light-gray},
+  breaklines=true,
+  extendedchars=true,
+  literate={é}{{\'e}}1
+}
+\lstset{aboveskip=15pt,belowskip=15pt}
+\usepackage[autostyle]{csquotes}  
+\def\labelitemi{--}
+\usepackage{enumitem}
+\setlist{nosep}
+\usepackage{booktabs}
+\usepackage{datetime}
+\lstdefinestyle{codestyle}{
+    numbers=left,
+    numbersep=10pt,
+    numberstyle=\color{medium-gray}
+}
+
+% Quoting magic to have the Author of the quote after the actual quote
+\let\oldquote\quote
+\let\endoldquote\endquote
+\renewenvironment{quote}[2][]
+  {\if\relax\detokenize{#1}\relax
+     \def\quoteauthor{#2}%
+   \else
+     \def\quoteauthor{#2~---~#1}%
+   \fi
+   \oldquote}
+  {\par\nobreak\smallskip\hfill(\quoteauthor)%
+   \endoldquote\addvspace{\bigskipamount}}
+
+
+\title{Subject - C environment setup}								% Title
+%\author{}								% Author
+\date{\today}											% Date
+
+\makeatletter
+\let\thetitle\@title
+%\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+\pagestyle{fancy}
+\fancyhf{}
+%\rhead{\theauthor}
+\lhead{\thetitle}
+\cfoot{\thepage}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+	\centering
+    \vspace*{0.5 cm}
+    \includegraphics[scale = 0.3]{resources/logo4.png}\\[1.0 cm]
+    \textsc{\LARGE \newline\newline UNIX 101}\\[2.0 cm]
+	\textsc{\Large or "How to feel like a true hack3r"}\\[0.5 cm]
+	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
+	{ \huge \bfseries \thetitle}\\
+	\rule{\linewidth}{0.2 mm} \\[1.5 cm]
+	
+    \thedate
+    
+    
+    
+	
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Foreword}
+\subsection{Notions seen in the tutorials}
+
+Welcome to this subject! If you have finished the first tutorial and the one on git (and I hope you do, if you have not yet, please finish them now), you should know:
+
+\begin{itemize}
+\item What the syntax of a command is
+\item A few useful commands
+\item How to navigate in a filesystem
+\item How to create, edit and remove files
+\item What is a packet manager and how to use one 
+\item \textbf{How to create executable scripts}
+\item \textbf{The basics of git}
+
+\end{itemize}
+
+This is just enough to begin working on setting up an environment to write C code and handing out code for review.
+
+\subsection{Objectives}
+
+The goal of this subject is to make you use the notions seen in the tutorial to demonstrate the use of UNIX environments in "real-life" situations. By now, you should have basic knowledge on C programming. Do not worry if you only know basic still: the goal of this subject is to evaluate your skills in UNIX, not in C. The quality of your code is not going to be relevant.
+
+\section{Setup}
+
+Before beginning, make sure you:
+
+\begin{itemize}
+	\item finished tutorial-1 and thus know how to write scripts
+	\item finished tutorial-git and thus know how to regularily make commits and push your work
+	\item have a Github account%have access to Gitea (\href{https://gitea.electrosenpai.dev/}{https://gitea.electrosenpai.dev/})
+\end{itemize}
+
+Before starting anything, create a git repository named \texttt{c-environment}.
+
+\section{Instructions}
+
+The goal of this subject is to make you use standard UNIX tools to compile C code into actual programs. You should have already learned a bit of C in the past but you may never have compiled code on your own computer.
+Compiling is the act of transforming code (i.e. text) into an executable file. A big share of programming languages are compiled; the process to turn code into programs is similar to what we are going to learn for most of them.
+
+The instructions for this subject are slim, on purpose. You are expected to lookup how to resolves the levels by yourself; but do not worry, the instructions are slim but so is the subject. You should be able to finish all levels entirely without trouble.
+
+\section{Evaluation}
+\subsection{Instructions}
+\newdate{duedate}{8}{01}{2020}
+
+You are asked to constituate a team of 4 to 5 persons. You will be graded as a team on:
+\begin{itemize}
+	\item An oral presentation of your work (no need to prepare slides, we will discuss around your code)
+	\item General C/UNIX knowledge questions
+\end{itemize}
+
+You have to push your work to your git repository before \displaydate{duedate}, 7:00 AM.
+
+The architecture of your repository should follow the following format:
+\begin{lstlisting}[language=bash]
+$pwd
+/home/nicolas/c-environment
+$tree --charset=ascii
+.
+|-- build_program.sh
+|-- clean_repository.sh
+|-- main.c
+`-- setup.sh
+
+0 directories, 4 files
+\end{lstlisting}
+
+\subsection{A word on cheating}
+
+You have to remember that you should be studying for your own good. Cheating will not bring you any good in the long term; it is fine not to be able to finish every exercise of the subject, your main goal is to train and learn things.
+
+Any form of cheating will immediately bring your grade down to 0. Additionally, your main teacher will be taken notice of that.
+
+\section{Exercises}
+
+\subsection{Level 1: A simple program}
+
+In \texttt{main.c}, write down a program that prints all numbers from 1 to 10. After each number should be displayed a newline.
+The return code of the program should be 0\footnote{This is controlled by the \texttt{return} statement of the \texttt{main} function. At any time in your terminal, enter \texttt{echo \$?} to check out he return code of the last command executed}.
+
+\begin{lstlisting}[language=bash]
+$./print_numbers
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+\end{lstlisting}
+
+For this level only, to test your program, you can use a third-party platform like \href{https://www.onlinegdb.com/online\_c\_compiler}{this one}. To pass this level, file \texttt{main.c} must be pushed to your repository and must contain the code of the program.
+
+\subsection{Level 2: Compilation!}
+
+The goal for this level is to be able to compile the program you just wrotenatively (i.e. without a third-party platform).
+
+You are expected to add two scripts to your repository to pass this level:
+\begin{itemize}
+	\item \texttt{setup.sh}
+	\item \texttt{build\_program.sh}
+\end{itemize}
+
+The first one should install all of the softwares needed to compile your program on a fresh Ubuntu system.
+The second one should produce a binary that prints all numbers from 1 to 10, each followed by a newline. The return code of the program should be 0. The filename of the program does not matter.
+
+Note: the binary that you generate is not to be commited!
+
+\begin{lstlisting}[language=bash]
+$ls
+build_program.sh  main.c  setup.sh
+$./setup.sh
+$./build_program.sh
+$ls
+a.out  build_program.sh  main.c  setup.sh
+$./a.out
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+$ls
+a.out  build_program.sh  main.c  setup.sh
+\end{lstlisting}
+
+You can use either \texttt{gcc} or \texttt{clang} to compile your code. Refer to their respective man pages for reference usage. Feel free to lookup tutorials online (e.g. \href{https://www3.ntu.edu.sg/home/ehchua/programming/cpp/gcc\_make.html}{this one} for gcc).
+
+\subsection{Level 3: Cleanup script}
+
+To pass this exercise, write a cleanup script that removes all files generated by your build script and incorporate it to your repository. At this point, since the compilation script only creates one file, only this one should be removed by that script.
+If there is no file to delete, nothing should happen\footnote{One can use the \texttt{test -f} statement to check if a file exists: \href{click here}{https://linuxize.com/post/bash-check-if-file-exists/\#check-if-file-exists}}.
+
+\begin{lstlisting}[language=bash]
+$ls
+build_program.sh  clean_repository.sh  main.c  setup.sh
+$./clean_repository.sh
+$ ls
+build_program.sh  clean_repository.sh  main.c  setup.sh
+$./build_program.sh
+$./a.out
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+$ ls
+a.out  build_program.sh  clean_repository.sh  main.c  setup.sh
+$./clean_repository.sh
+$ls
+build_program.sh  clean_repository.sh  main.c  setup.sh
+$./clean_repository.sh
+$ls
+build_program.sh  clean_repository.sh  main.c  setup.sh
+\end{lstlisting}
+
+\subsection{Level 4: Name your program}
+
+To pass this exercise, your \texttt{build\_program.sh} script should name your program \texttt{enumerate\_numbers}. Your cleanup script should be adapted accordingly.
+
+\begin{lstlisting}[language=bash]
+$ls
+build_program.sh  clean_repository.sh  main.c  setup.sh
+$./build_program.sh
+$ls
+build_program.sh  clean_repository.sh  enumerate_numbers  main.c  setup.sh
+$./enumerate_numbers
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+$./clean_repository.sh
+$ls
+build_program.sh  clean_repository.sh  main.c  setup.sh
+\end{lstlisting}
+
+\subsection{Level 5: Command line arguments}
+
+The standard way to alter a program is to give it positional arguments. We have seen it plenty of times with basics UNIX commands. For example, when using \texttt{ls -l}, we invoke \texttt{ls} with a \texttt{-l} argument.
+Of course then, it is possible to retrieve arguments in your C code. The parameters to your main function, \texttt{argc} and \texttt{argv} provide access to the arguments provided by the user.
+
+To pass this level, your program should:
+\begin{itemize}
+	\item If invoked without argument (\texttt{./enumerate\_numbers}), behave like it used to do, which is to display numbers from 1 to 10
+	\item If invoked with an argument that is a number, display numbers from 1 to that numbers (e.g. \texttt{./enumerate\_numbers 5} should display numbers from 1 to 5)
+	\item If invoked with an argument that is a number <= 0, display nothing
+	\item If invoked with an argument that is not a number, display nothing
+	\item If invoked with more than one argument, only consider the first one
+\end{itemize}
+
+Its return code should be 0.
+
+Hint: \texttt{man atoi}.
+
+\begin{lstlisting}[language=bash]
+$./enumerate_numbers
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+$./enumerate_numbers 3
+1
+2
+3
+$./enumerate_numbers 0
+$./enumerate_numbers -1
+$./enumerate_numbers 5 yo
+1
+2
+3
+4
+5
+$./enumerate_numbers yo
+\end{lstlisting}
+
+\subsection{Level 6: Makefile (bonus)}
+
+The standard way to write compilation and cleanup steps for a C project is to use the command \texttt{make}. It is most of the times working in pair with a \texttt{Makefile} file. Makefiles contain logic rules to apply: which compiler to use for a given rule, custom steps for cross-platforms compilation, specific workflows to only compile some parts of a codebase, etc.
+
+To pass this level, replace \texttt{build\_program.sh} and \texttt{clean\_repository.sh} by a Makefile. Define a \texttt{build} rule to replace the first script and a \texttt{clean} rule to replace the other one.
+
+Feel free to check out the man page for \texttt{make} and online resources. Since our program is simple, the resulting Makefile should be very slim.
+
+\end{document}
