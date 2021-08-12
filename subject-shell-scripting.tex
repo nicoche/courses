@@ -88,7 +88,7 @@
 \begin{titlepage}
 	\centering
     \vspace*{0.5 cm}
-    \includegraphics[scale = 0.3]{logo4.png}\\[1.0 cm]
+    \includegraphics[scale = 0.3]{resources/logo4.png}\\[1.0 cm]
     \textsc{\LARGE \newline\newline UNIX 101}\\[2.0 cm]
 	\textsc{\Large or "How to feel like a true hack3r"}\\[0.5 cm]
 	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
@@ -132,7 +132,7 @@ This is just enough to begin working on scripts and handing them for review.
 The goal of this subject is to make you use the notions seen in the tutorial through coding exercises.
 Additionally, we will have a look over some aspects of the shell command language. That will allow you to write more advanced scripts.
 
-Last but not least, you are going to be evaluated on the exercises of this document. You are not expected to finish them during the course: the deadline is in a few weeks.
+There are new notions you are going to learn and a handful of exercises. Start working early!
 
 \section{Setup}
 
@@ -141,14 +141,10 @@ Before beginning, make sure you:
 \begin{itemize}
 	\item finished tutorial-1 and thus know how to write scripts
 	\item finished tutorial-git and thus know how to regularily make commits and push your work
-	\item have access to Gitea (\href{https://gitea.electrosenpai.dev/}{https://gitea.electrosenpai.dev/})
+	\item have a Github account%have access to Gitea (\href{https://gitea.electrosenpai.dev/}{https://gitea.electrosenpai.dev/})
 \end{itemize}
 
-A git repository should have been initialized for you already. Clone it using the following command:
-
-\begin{lstlisting}[language=bash]
-$git clone ssh://git@gitea.electrosenpai.dev:2424/ESILV-2019-BACHELOR-firstname.lastname/shell-scripting.git
-\end{lstlisting}
+Before starting anything, create a git repository named \texttt{shell-scripting}.
 
 \section{Instructions}
 
@@ -156,13 +152,19 @@ You have to create one directory per exercise.
 
 For each exercise, you have to write a script and provide a \texttt{README} file. The script should solve the exercise. The \texttt{README} file should be a text file that describes how you solved the exercise and the problems you encountered. In the scenario where you cannot have a good enough script, leave a \texttt{README} file with the solutions you tried to implement. Who knows, you might save some points :) Also, you can provide a \texttt{tests} directory. It is a good practice to write automatic tests for your code. As we did not study that on tutorials, no point will be taken off if there are no tests. However, points can be granted if you provide good tests along with your scripts.
 
-As it is a good practice to perform git commits regularily, you are asked to do it often. If you do not save your advancements, you will loose points on your final grade. Also, remember that you can push your commits to Gitea at any time.
+As it is a good practice to perform git commits regularily, you are asked to do it often. If you do not save often your advancements, you will loose points on your final grade. Also, remember that you can push your commits to your github repository at any time.
 
 \section{Evaluation}
 \subsection{Instructions}
-\newdate{duedate}{6}{01}{2020}
+\newdate{duedate}{8}{01}{2020}
 
-You have to push your work to Gitea before \displaydate{duedate}, 23h59.
+You are asked to constituate a team of 4 to 5 persons. You will be graded as a team on:
+\begin{itemize}
+	\item An oral presentation of your work (no need to prepare slides, we will discuss around your code)
+	\item General UNIX knowledge questions
+\end{itemize}
+
+You have to push your work to your git repository before \displaydate{duedate}, 7:00 AM.
 
 The architecture of your repository should follow the following format:
 
