@@ -43,7 +43,8 @@
 \usepackage{enumitem}
 \setlist{nosep}
 \usepackage{booktabs}
-\usepackage{tikz}                           % super package for complex and awesome drawing
+\usepackage[T1]{fontenc}	% use \textless
+\usepackage{tikz}               % super package for complex and awesome drawing
 
 \title{Tutorial}								% Title
 %\author{}								% Author
@@ -218,7 +219,7 @@ lrwxrwxrwx   1 root root    30 déc.  23 19:05 vmlinuz.old -> boot/vmlinuz-4.15.
 That is quite a lot of information! The option \texttt{-l} allows one to get much more information than with a simple \texttt{ls}.
 
 To check out the full list of possible arguments you can use with ls, use the command \texttt{man ls}.
-The \texttt{man} command gives information about the command given as argument. From now on, this will be your best friend. You can quit the man by pressing \texttt{ESC}. \textbf{Before asking for help, always check out the manual}. The answer to your question will, in 90\% of the cases, be findable inside.
+The \texttt{man} command gives information about the command given as argument. From now on, this will be your best friend. You can quit the man by pressing \texttt{q}. \textbf{Before asking for help, always check out the manual}. The answer to your question will, in 95\% of the cases, be findable inside.
 
 Also, at the top of every man page is the prototype (\textit{"synopsys"}) of the command. It will help you figure out how you should call it, in which order the arguments can be put and which arguments are mandatory for the command to run.
 
@@ -229,6 +230,12 @@ Actually, the term \textit{command} is not accurate.
 When one launches the command \texttt{ls}, the program at location \texttt{/bin/ls} is executed by the shell. Then, in this case, entering in the shell \texttt{ls} is the same as entering \texttt{/bin/ls}, but faster.
 
 Using \texttt{which ls} tells you where the program \texttt{ls} is located.
+
+\begin{lstlisting}[language=bash]
+$which ls
+/bin/ls
+\end{lstlisting}
+
 One simply has to list the content of the directory \texttt{/bin} to verify that \texttt{ls} is a program that lies there:
 
 \begin{lstlisting}[language=bash]
@@ -245,11 +252,14 @@ total 13044
 (...)
 \end{lstlisting}
 
-By the way, \texttt{which} is also a program, so entering \texttt{which which} in the shell works!
+As you can see, the directory \texttt{/bin} contains the program \texttt{ls}!
 
-However, some commands do not depend on the programs on your system. They are contained within the shell tool set, literally built in. Thus, we call then... built-in commands\footnote{\href{https://unix.stackexchange.com/questions/11454/what-is-the-difference-between-a-builtin-command-and-one-that-is-not}{This question}'s responses might give you a deeper understanding of the difference between these two types of commands}.
+By the way, \texttt{which} is also a program, so entering \texttt{which which} in the shell works! Feel free to try.
 
-Before ending this section, it is important to understand that there is no black magic in UNIX systems. The shell does not magically know where to look for the program \texttt{ls} when an user inputs that. There is a special variable that the shell keeps track of: the \texttt{PATH}.
+However, some commands do not depend on the programs on your filesystem. They are contained within the shell tool set, literally "built in" the shell. Thus, we call them... built-in commands\footnote{\href{https://unix.stackexchange.com/questions/11454/what-is-the-difference-between-a-builtin-command-and-one-that-is-not}{This question}'s responses might give you a deeper understanding of the difference between these two types of commands}.
+
+Now, how does \texttt{which}, or your shell, knows where to find the program your commands refer to? Well, there is no black magic in UNIX system; the shell does not magically know that the program \texttt{ls} lives in \texttt{/bin}, for example.
+There is a special variable that the shell keeps track of: the \texttt{PATH}.
 
 \begin{lstlisting}[language=bash]
 $echo $PATH # Show the content of PATH variable
@@ -257,29 +267,31 @@ $echo $PATH # Show the content of PATH variable
 \end{lstlisting}
 
 It references all of the location where binaries are supposed to sit, separated by a colon (\texttt{:}).
-When the shell encounters a non-builtin command, it will simply check in all of the locations referenced in the path, one by one, if there is a program named as the command. If there is one, it will start it; if not, it will raise an error.
+When the shell encounters a non-builtin command, like \texttt{ls}, it will simply check in all of the locations referenced in the path, one by one, if there is a program named as the command. If there is one, it will start it; if not, it will raise an error.
 
 \subsection{Why the command line?}
 
 Now you may be wondering why bother using fastidious commands to simply show a list of files. It would be way simpler to use a graphical tool like Mac's Finder or Windows's file explorer!
 
-Well, even though it is more complicated to do basic things, the diversity of options shipped with every command allows one to do much more than simply with a GUI.
+Well, even though it is more complicated to do basic things, the diversity of options shipped with every command allows one to do much more than simply with a graphical user interface (GUI).
 It is also possible to combine options, widening the range of possibilites.
-The philosophy of UNIX is for each command to be able to do a limited set of things, but to do it perfectly.
+The philosophy of UNIX is for each command to be able to do a limited set of things, but to do it perfectly, with performance in mind.
 
 A few other reasons as to why knowing how to work on a command line is important:
 \begin{itemize}
-\item Many technical actions cannot be done graphically, a lot of software engineering/sysadmin programs only have a command line interface (CLI)
+\item Many technical actions cannot be done graphically, as a lot of software engineering/sysadmin programs only have a command line interface (CLI)
 \item Scripts are essential to computer engineering and are nothing but a list of sequential commands to execute
-\item Thanks to their variety of options, command line programs allow one to run complex tasks in a simple line. Imagine how tiresome it would be to copy just one kind of files from one huge directory to another using Window's file manager
+\item Thanks to their variety of options, command line programs allow one to run complex tasks in a simple line. Imagine how tiresome it would be to copy only .jpeg files of size \textless 100Kb from one huge directory to another using Window's file manager? With the CLI, it is doable with a simple command or a minimal script
 \end{itemize}
+
+The bottom line is: in computer science, everybody uses the command line. Just like knowing how to code, knowing how to use the command line is essential in the daily job of anyone working in that field.
 
 
 \section{Core filesystem utilities}
 
 Now that you have an idea on how to use commands and most importantly on where to find documentation, let us dig into the basics.
-In this section, you will learn how to navigate in your filesystem and how to alter it.
-Do not forget to take a look at the manual in case of doubt.
+In this section, you will learn how to navigate in your filesystem and how to play with it.
+Do not forget to take a look at the manual in case of doubt (type \texttt{man} followed by the name of the command you need documentation for).
 
 Before we start using commands, please read thoroughfully the next section.
 
@@ -289,7 +301,7 @@ The most common use case for shells -and the one we are going to use the most du
 
 The current working directory is hence something that can change depending on commands input by the user. One can "move" from one directory to an other and the shell will keep track of that.
 
-Now, directories and files can be referenced \textbf{in regards to the current directory} or \textbf{in regards to the root of the filesystem}. The former kind of reference is called \textbf{relative} and the latter \textbf{absolute}. An absolute path to a file or directory will stay the same, no matter what is the current directory of the shell; a relative one will depend on what is the current directory of the shell. Using absolute paths is often safer to use because you cannot get them wrong; however, they can get long, which makes them tiring to write down. Relative paths, on the other hand, are easier to write because shorter but can lead to mistakes. \newline
+Now, directories and files can be referenced \textbf{in regards to the current directory} or \textbf{in regards to the root of the filesystem}. The former kind of reference is called \textbf{relative} and the latter \textbf{absolute}. An absolute path to a file or directory will stay the same, no matter what is the current directory of the shell; a relative one will depend on what is the current directory of the shell. Using absolute paths is often safer to use because you cannot get them wrong; however, they can get long, which makes them tiring to write down. Relative paths, on the other hand, are easier to write because they are shorter but are more error prone. \newline
 
 \usetikzlibrary{trees,calc}
 \tikzset{
@@ -362,10 +374,10 @@ Let us review the commands that allow you to move around your filesystem.
 
 \subsubsection{ls ("list")}
 
-This is an easy one, we have just learned about it the last section. Remember to use the manual for things that you do not know how to do.
+This is an easy one, we have just learned about it in the last section.
 Try to:
 \begin{enumerate}
-\item List the content of the current directory, including the hidden files\footnote{In UNIX, hidden files' filenames begin with a "."}. What do you think the \texttt{.} and \texttt{..} directories refer to?
+\item List the content of the current directory, including the hidden files\footnote{In UNIX, hidden files' filenames begin with a "."}. What do you think the \texttt{.} and \texttt{..} directories refer to? Remember to use the manual to learn about the things you do not know
 \item List the content of \texttt{/etc}. What do you think is inside?
 \item List the content of \texttt{/etc} and all of its subdirectories in one command
 \end{enumerate}
@@ -379,7 +391,7 @@ Try it! Open a new terminal and type \texttt{pwd}.
 $pwd
 /home/nicolas
 \end{lstlisting}
-This is what is called your \textit{home}. Every user of the computer has its own home directory, where he can put his files.
+This is what is called your \textit{home}. Every user of the computer has its own home directory, where he can put his personal files.
 
 \subsubsection{cd ("change directory")}
 
@@ -393,7 +405,7 @@ This command allows you to move from one directory to another. It is similar to 
 you can use \texttt{help my\_command}.
 \item What is the difference between writing \texttt{cd /bin} and \texttt{cd bin}?
 \item Move anywhere in your filesystem. Then, type \texttt{cd} without any argument. Where are you now?
-\item Move anywhere in your filesystem. Then, type \texttt{cd ~}. Where are you now?
+\item Move anywhere in your filesystem. Then, type \texttt{cd \~}. Where are you now?
 \item Move to \texttt{/etc}, then move to \texttt{/usr}. Finally, type \texttt{cd -}. Where are you now?
 \end{enumerate}
 
@@ -407,7 +419,7 @@ Great, we know how to move in our filesystem. Let us start manipulating files an
 As its name indicates it, this command allows one to create a new directory.
 \begin{enumerate}
 \item Move to your home directory and create a directory named \texttt{code}
-\item Move to your home directory and, with a single \texttt{mkdir} command, create the two directories \texttt{code/python} and \texttt{code/python/exo\_1}
+\item Move to your home directory and, with a single \texttt{mkdir} command, create the two directories \texttt{code/python} and \texttt{code/python/exo1}
 \end{enumerate}
 
 \subsubsection{rmdir ("remove directory")}
@@ -419,22 +431,24 @@ Note that this command only works on empty directories.
 
 This one allows one to copy files and directories from a directory to another.
 \begin{enumerate}
-\item Create a new directory and copy the file \texttt{/etc/hostname} inside
+\item Create a new directory and copy the file \texttt{/etc/hosts} inside
 \item Create a new directory and recursively copy all of the files and directories from \texttt{/etc} inside. Can you guess why warnings are printed to the screen?
 \end{enumerate}
 
 Also, remember this in the previous section?
 
 \begin{quote}
-\textit{Imagine how tiresome it would be to copy just one kind of files from one huge directory to another using Window's file manager}
+\textit{Imagine how tiresome it would be to copy only .jpeg files of size \textless 100Kb from one huge directory to another using Window's file manager?}
 \end{quote}
 
-It can be done super easily using \texttt{cp} combined with a wildcard\footnote{\url{https://www.shell-tips.com/2006/11/04/using-bash-wildcards/}}.
+With \texttt{cp}, combined with a wildcard\footnote{\url{https://www.shell-tips.com/2006/11/04/using-bash-wildcards/}}, we can super easily copy all files which end with \texttt{.conf}. It would not be too complicated to only select files of size \textless 100Kb, but let's keep this for another time.
+
+This example demonstrates how to copy all files which end with \texttt{.conf} from \texttt{/etc/} to \texttt{/tmp/mdr}.
 
 \begin{lstlisting}[language=bash]
-$mkdir /tmp/mdr
-$cp /etc/*.conf /tmp/mdr/
-$ls --format=single-column /tmp/mdr/
+$mkdir /tmp/mdr # Create a new directory called mdr, in /tmp/
+$cp /etc/*.conf /tmp/mdr/ # Copy all files that end with.conf from /etc/ to /tmp/mdr/
+$ls --format=single-column /tmp/mdr/ # Verify that the files have been correctly copied
 adduser.conf
 apg.conf
 appstream.conf
@@ -481,7 +495,7 @@ The \texttt{mv} command allows one to move a file or directory somewhere else. I
 It can also be used to rename a file.
 
 \begin{enumerate}
-\item Create a new directory, copy the file \texttt{/etc/hostname} inside and rename it \texttt{file1}.
+\item Create a new directory, copy the file \texttt{/etc/hosts} inside and rename it \texttt{file1}.
 \item Duplicate \texttt{file1} and create another directory. With one command, move both files to that new directory
 \end{enumerate}
 
@@ -518,18 +532,20 @@ We have manipulated directories and files but we still do not know how to show t
 This command simply displays the content of the files given as argument.
 
 \begin{enumerate}
-\item Read the content of \texttt{/etc/os-release}. What do you think this file refers to?
-\item Read the content of \texttt{/etc/hosts} and \texttt{/etc/hostname} in just one command
+\item If you run a Linux distribution, read the content of \texttt{/etc/os-release}
+\item If you run another system, read the content of \texttt{/etc/shells} instead
+\item What do you think the file \texttt{/etc/os-release} refers to?
+\item Read the content of \texttt{/etc/hosts} and \texttt{/etc/services} in just one command
 \item Using an option of cat, find out how many lines are inside the file \texttt{/etc/services}\footnote{There is a command called \texttt{wc} which is specialized in counting the number of lines, but let us not use this one for now :)}
 \end{enumerate}
 
 \subsubsection{head \& tail}
 
-These two commands are similar to \texttt{cat} but only display the beginning (head) or the end(tail) of a file. It can be useful to read the beginning or the end huge files.
-The number of lines displayed default to 10, but it can be changed with an option. 
+These two commands are similar to \texttt{cat} but only display the beginning (head) or the end (tail) of a file. It can be useful to read the beginning or the end huge files.
+The number of lines displayed default to 10, but it can be changed with an option.
 
 \begin{enumerate}
-\item Display the first 20 lines of \texttt{/etc/inputrc}
+\item Display the first 20 lines of \texttt{/etc/protocols}
 \item Display the last two bytes of \texttt{/etc/hosts}. Display the last byte of \texttt{/etc/hosts}. Why do you think you get this result? Using the \texttt{-E} option of cat, identify what the last byte of this file is
 \end{enumerate}
 
@@ -575,7 +591,7 @@ There are many file editors\footnote{We will not discuss IDEs in this tutorial} 
 
 If you do not feel at ease and want to go for the easiest thing, go for \textbf{gedit}.
 
-If you feel adventurous and wish to take the difficult path, go for \textbf{vim}. Knowing how to do basic stuff with this tool is always useful as pretty much every UNIX machine in the world has at least an editor like vim available\footnote{Useful when you have are controling a server remotely and only have access to a terminal!}. You can get away with it with using vim with the following tips:
+If you feel adventurous and wish to take the difficult path, go for \textbf{vim}. Knowing how to do basic stuff with this tool is always useful as pretty much every UNIX machine in the world has at least \textbf{vim} or \textbf{vi} (simpler vim)\footnote{Useful when you have are controling a server remotely and only have access to a terminal!}. You can get away with using vim thanks to the following tips:
 
 \begin{itemize}
 \item Do not use the mouse, it will not work well
@@ -712,11 +728,11 @@ Now that your favorite editor is installed, simply invoke it with the name of th
 \begin{lstlisting}[language=bash]
 $cd Documents
 # This works with gedit and all the other tools. Simply replace "vim" by the name of your text editor
-$vim my_document
+$vim my_document # or gedit my_document or nano my_document or atom my_document...
 # Now, either a pop-up appears or your terminal is replaced by the text editor. In most cases you CANNOT use your terminal until the text editor is closed
 (...editing...)
 # Once you save your modifications and close the text editor, you can re-use your terminal
-$cat my_document 
+$cat my_document
 Hello!
 $
 \end{lstlisting}
@@ -827,7 +843,7 @@ $ls -d /tmp/my_new_directory
 $
 \end{lstlisting}
 
-Knowing this and the fact that \texttt{sudo my\_command} launches \texttt{my\_command} as the \texttt{root} user, can you troubleshoot why we could not open the file \texttt{/var/lib/dpkg/lock}?
+Knowing this and the fact that \texttt{sudo my\_command} launches \texttt{my\_command} as the \texttt{root} user, can you troubleshoot why we could not open the file \texttt{/var/lib/dpkg/lock} as a simple user?
 
 \begin{lstlisting}[language=bash]
 ls -lh /var/lib/dpkg/lock
@@ -919,6 +935,8 @@ $./my_ls.sh
 
 It works! :)
 
+Now, this is a very simple example, but remember that Shell is a full-fledged language: there are conditions, loops, arrays and all. You can build real applications with it!
+
 \subsubsection{A python script}
 
 You have seen how to write a shell script, but it was not that useful nor impressive, since you may not have sufficient knowledge in this scripting language.
@@ -934,7 +952,7 @@ $sudo apt install python3-pip
 
 \begin{lstlisting}[language=bash]
 # For Mac OS users
-$brew intall python3
+$brew install python3
 \end{lstlisting}
 
 Now, find the absolute path to Python3's binary:
@@ -944,7 +962,7 @@ $which python3
 /usr/bin/python3
 \end{lstlisting}
 
-Finally, create a file named \texttt{guessing\_game.py} and paste the following code snippet inside. Do not forget to change the shebang if it does not fit the location of your python3 binary.
+Finally, create a file named \texttt{guessing\_game.py} and paste the following code snippet inside (\href{https://pastebin.com/U6XG2NF5}{click here}). Do not forget to change the shebang if it does not fit the location of your python3 binary.
 
 \begin{lstlisting}[language=python]
 #! /usr/bin/python3
