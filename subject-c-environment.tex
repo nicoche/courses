@@ -152,9 +152,9 @@ The instructions for this subject are slim, on purpose. You are expected to look
 
 \section{Evaluation}
 \subsection{Instructions}
-\newdate{duedate}{8}{01}{2020}
+\newdate{duedate}{15}{12}{2021}
 
-You are asked to constituate a team of 4 to 5 persons. You will be graded as a team on:
+You are asked to constituate a team of 2 persons. You will be graded as a team on:
 \begin{itemize}
 	\item An oral presentation of your work (no need to prepare slides, we will discuss around your code)
 	\item General C/UNIX knowledge questions
@@ -184,6 +184,8 @@ Any form of cheating will immediately bring your grade down to 0. Additionally, 
 
 \section{Exercises}
 
+In between each level, \textbf{you are asked to commit your work with git}. This will be a part of your grade.
+
 \subsection{Level 1: A simple program}
 
 In \texttt{main.c}, write down a program that prints all numbers from 1 to 10. After each number should be displayed a newline.
@@ -207,7 +209,7 @@ For this level only, to test your program, you can use a third-party platform li
 
 \subsection{Level 2: Compilation!}
 
-The goal for this level is to be able to compile the program you just wrotenatively (i.e. without a third-party platform).
+The goal for this level is to be able to compile the program you just wrote natively (i.e. without a third-party platform).
 
 You are expected to add two scripts to your repository to pass this level:
 \begin{itemize}
@@ -303,49 +305,90 @@ $ls
 build_program.sh  clean_repository.sh  main.c  setup.sh
 \end{lstlisting}
 
-\subsection{Level 5: Command line arguments}
+\subsection{Level 5: Guessing game}
+
+Now that you have a naive program, but most importantly, a working environment, you will write a slightly more useful program.
+To pass this level, you need to:
+\begin{itemize}
+	\item Change your script such that your program is named \texttt{guessing\_game} instead of \texttt{enumerate\_numbers}
+	\item Replace the code of your program such that, instead of enumerating numbers, it implements a guesing game, similar to the one from tutorial-1. Here are the specifications of the game:
+	\begin{itemize}
+			\item On program startup, "I have in mind a number in between 1 and 100, can you find it?", with a line feed, should be displayed. A number to guess should be taken, at random, between 1 and 100
+			\item Then, the program should wait for user input
+			\item If the user inputs a number between 1 and 100, it should be compared to the random number taken. If the user number is bigger than the random number, "The number to guess is lower" should be displayed, with a line feed. If it is lower, "The number to guess is higher" should be displayed, with a line feed. In both cases, the program should wait for user input and repeat that step until the right number is given
+			\item If the right number is given, "You just found the number, it was indeed " should be displayed, followed by the number and a line feed. Then, the program should exit with an exit code of 0
+			\item At any time, if the user inputs something wrong (e.g. letters, a number greater than 100 or lower than 1), the program should exit with an exit code of 1 and an appropriate error message
+		\end{itemize}
+\end{itemize}
+
+Hint: \texttt{man scanf}.
+
+\begin{lstlisting}[language=bash]
+$ls
+build_program.sh  clean_repository.sh  main.c  setup.sh
+$./build_program.sh
+$ls
+build_program.sh  clean_repository.sh  guessing_game  main.c  setup.sh
+$./guessing_game
+I have in mind a number in between 1 and 100, can you find it?
+50
+The number to guess is higher
+75
+The number to guess is lower
+63
+The number to guess is lower
+57
+The number to guess is lower
+53
+The number to guess is higher
+55
+The number to guess is higher
+56
+You just found the number, it was indeed 56
+$
+\end{lstlisting}
+
+\subsection{Level 6: Command line arguments}
 
 The standard way to alter a program is to give it positional arguments. We have seen it plenty of times with basics UNIX commands. For example, when using \texttt{ls -l}, we invoke \texttt{ls} with a \texttt{-l} argument.
 Of course then, it is possible to retrieve arguments in your C code. The parameters to your main function, \texttt{argc} and \texttt{argv} provide access to the arguments provided by the user.
 
 To pass this level, your program should:
 \begin{itemize}
-	\item If invoked without argument (\texttt{./enumerate\_numbers}), behave like it used to do, which is to display numbers from 1 to 10
-	\item If invoked with an argument that is a number, display numbers from 1 to that numbers (e.g. \texttt{./enumerate\_numbers 5} should display numbers from 1 to 5)
-	\item If invoked with an argument that is a number <= 0, display nothing
-	\item If invoked with an argument that is not a number, display nothing
+	\item If invoked without argument (\texttt{./guessing\_game}), behave like it used to do, which is to run the guessing game
+	\item If invoked with an argument that is a number, run the guessing game between 1 and that number instead of in between 1 and 100 (e.g. \texttt{./guessing\_game 50} should run the guessing game from 1 to 50)
+	\item If invoked with an argument that is a number lower or equal to 1, display an appropriate error message and exit with a code 2
+	\item If invoked with an argument that is not a number, display an appropriate error message and exit with a code 2
 	\item If invoked with more than one argument, only consider the first one
 \end{itemize}
-
-Its return code should be 0.
 
 Hint: \texttt{man atoi}.
 
 \begin{lstlisting}[language=bash]
-$./enumerate_numbers
-1
-2
+$./guessing_game 33
+I have in mind a number in between 1 and 33, can you find it?
+16
+The number to guess is higher
+25
+The number to guess is lower
+20
+The number to guess is lower
+18
+You just found the number, it was indeed 18
+$
+$./guessing_game yo
+Invalid argument
+$./guessing_game 0
+Invalid argument
+$./guessing_game -1
+Invalid argument
+$./guessing_game 5 yo
+I have in mind a number in between 1 and 5, can you find it?
 3
+The number to guess is higher
 4
-5
-6
-7
-8
-9
-10
-$./enumerate_numbers 3
-1
-2
-3
-$./enumerate_numbers 0
-$./enumerate_numbers -1
-$./enumerate_numbers 5 yo
-1
-2
-3
-4
-5
-$./enumerate_numbers yo
+You just found the number, it was indeed 4
+$
 \end{lstlisting}
 
 \subsection{Level 6: Makefile (bonus)}
