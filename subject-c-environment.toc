@@ -13,4 +13,4 @@
 \contentsline {subsection}{\numberline {5.4}Level 4: Name your program}{6}{subsection.5.4}%
 \contentsline {subsection}{\numberline {5.5}Level 5: Guessing game}{7}{subsection.5.5}%
 \contentsline {subsection}{\numberline {5.6}Level 6: Command line arguments}{8}{subsection.5.6}%
-\contentsline {subsection}{\numberline {5.7}Level 6: Makefile (bonus)}{9}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.7}Level 7: Makefile (bonus)}{9}{subsection.5.7}%
