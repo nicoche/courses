@@ -1,20 +1,21 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"time"
 	"bufio"
+	"fmt"
+	"os"
 	"strings"
-	"flag"
-	"github.com/peterbourgon/ff/v3"
+	"time"
+	"github.com/pkg/errors"
+	//"flag"
+	//"github.com/peterbourgon/ff/v3"
 	libgit "github.com/libgit2/git2go/v31"
 )
 
 // Check bladeadoe wdewd wd
 type Check struct {
-	fn func(*libgit.Diff, ...string) (bool, error)
-	name string
+	fn    func(*libgit.Diff, ...string) (bool, error)
+	name  string
 	value int
 }
 
@@ -32,6 +33,9 @@ func getCommits(repo *libgit.Repository) ([]*libgit.Commit, error) {
 
 	headRef, err := repo.Head()
 	if err != nil {
+		if libgit.IsErrorCode(err, libgit.ErrorCodeUnbornBranch) {
+			return commits, nil
+		}
 		return commits, err
 	}
 	headAnnotatedCommit, err := repo.AnnotatedCommitFromRef(headRef)
@@ -80,34 +84,77 @@ func discardTooRecentCommits(commits []*libgit.Commit, limit time.Time) []*libgi
 	return finalList
 }
 
-func gradeTutorial(ghUsername, ghRepo, firstName, lastName string) (int, int, string) {
-	checkValidationTable := map[string]string {}
-	for _, check := range(checkList) {
+type GitTutorialGrade struct {
+	Grade int
+	OutOf int
+	Comment string
+}
+
+func gradeTutorialFromGithubInfo(ghusername string, ghrepo string, firstName string, lastName string) (*GitTutorialGrade, error) {
+	tutorialURL := fmt.Sprintf("https://github.com/%s/%s", ghusername, ghrepo)
+	return gradeTutorialFromUrl(tutorialURL, firstName, lastName)
+}
+
+func credentialsCallback(url string, username string, allowedTypes libgit.CredType) (*libgit.Cred, error) {
+	//return libgit.NewCredentialUsername("git")
+	//return libgit.NewCredentialSSHKeyFromAgent("nicolas")
+	return libgit.NewCredentialDefault()
+	//res, cred := libgit.NewCredDefault()
+	//return libgit.ErrorCode(res), &cred
+	//ret, cred := git.NewCredSshKey("git", "/Users/odewahn/.ssh/id_rsa.pub", "/Users/odewahn/.ssh/id_rsa", "")
+	//fmt.Print("Enter your username: ")
+	//var user string
+	//fmt.Scanln(&user)
+
+	//fmt.Print("Enter password: ")
+	//var password string
+	//fmt.Scanln(&password)
+
+	//ret, cred := git.NewCredUserpassPlaintext(user, password)
+	//return , &cred
+}
+
+func certificateCheckCallback(cert *libgit.Certificate, valid bool, hostname string) libgit.ErrorCode {
+	return 0
+}
+
+func gradeTutorialFromUrl(tutorialURL string, firstName string, lastName string) (*GitTutorialGrade, error) {
+	if tutorialURL == "" {
+		return &GitTutorialGrade{
+			Grade: 0,
+			OutOf: 0,
+			Comment: "no url provided",
+		}, nil
+	}
+
+	checkValidationTable := map[string]string{}
+	for _, check := range checkList {
 		checkValidationTable[check.name] = "failed"
 	}
 
 	cloneTo := "./tmp"
 	err := os.RemoveAll(cloneTo)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer os.RemoveAll(cloneTo)
 
-	tutorialURL := ghRepo
-	if tutorialURL == "" {
-		tutorialURL = fmt.Sprintf("https://github.com/%s/git-tutorial", ghUsername)
-	}
-	repo, err := libgit.Clone(tutorialURL, cloneTo, &libgit.CloneOptions{})
+	_, err = cloneRepo(tutorialURL)
 	if err != nil {
-		return 0, 0, fmt.Sprintf("%d", err)
+		return nil, errors.Wrapf(err, "could not clone %s", tutorialURL)
+	}
+
+	repo, err := libgit.OpenRepository(cloneTo)
+	if err != nil {
+		return nil, err
 	}
 	commits, err := getCommits(repo)
 	if err != nil {
-		return 0, 0, fmt.Sprintf("%d", err)
+		return nil, err
 	}
 	submissionDeadline, err := time.Parse(time.UnixDate, "Sun Dec 10 20:00:00 UTC 2021")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	commits = discardTooRecentCommits(commits, submissionDeadline)
 	fmt.Printf("Analyzing %d commits...\n", len(commits))
@@ -120,7 +167,7 @@ func gradeTutorial(ghUsername, ghRepo, firstName, lastName string) (int, int, st
 		diff := getDiff(repo, commit, parent)
 		checksValidated, err := runChecklist(diff, firstName, lastName)
 		if err != nil {
-			return 0, 0, fmt.Sprintf("Failed to run checklist: %+v", err)
+			return nil, errors.Errorf("failed to run checklist: %+v", err)
 		}
 		for _, checkName := range checksValidated {
 			checkValidationTable[checkName] = "succeeded"
@@ -133,7 +180,12 @@ func gradeTutorial(ghUsername, ghRepo, firstName, lastName string) (int, int, st
 		checkValidationTable["readmeWithNameAdded"] = "skipped"
 	}
 
-	return computeGrade(checkValidationTable)
+	grade, outOf, details := computeGrade(checkValidationTable)
+	return &GitTutorialGrade{
+		Grade: grade,
+		OutOf: outOf,
+		Comment: details,
+	}, nil
 }
 
 func computeGrade(checkTable map[string]string) (int, int, string) {
@@ -155,7 +207,7 @@ func computeGrade(checkTable map[string]string) (int, int, string) {
 	}
 
 	return grade, total, fmt.Sprintf("Checks passed: %+v, checks failed: %+v, checks skipped: %+v",
-	checksPassed, checksFailed, checksSkipped)
+		checksPassed, checksFailed, checksSkipped)
 }
 
 func getDiff(repo *libgit.Repository, commit *libgit.Commit, parent *libgit.Commit) *libgit.Diff {
@@ -299,8 +351,8 @@ func editsFile(diff *libgit.Diff, filepath string) bool {
 func grabPatchesThatEdit(diff *libgit.Diff, filepath string) ([]string, error) {
 	deltaIndices := findDeltaIndicesThatEdit(diff, filepath)
 	if len(deltaIndices) == 0 {
-		return []string{}, fmt.Errorf("Attempting to get the delta of a diff " +
-			"that is supposed to edit %s when that diff does not " +
+		return []string{}, fmt.Errorf("Attempting to get the delta of a diff "+
+			"that is supposed to edit %s when that diff does not "+
 			"actually edits that file (%+v)", filepath, diff)
 	}
 	patchesStr := []string{}
@@ -336,7 +388,7 @@ func findDeltaIndicesRelatedTo(diff *libgit.Diff, filepath string) []int {
 	if err != nil {
 		panic(err)
 	}
-	for i := 0 ; i < deltaCount ; i++ {
+	for i := 0; i < deltaCount; i++ {
 		delta, err := diff.Delta(i)
 		if err != nil {
 			panic(err)
@@ -355,7 +407,7 @@ func findDeltaIndicesThatAdd(diff *libgit.Diff, filepath string) []int {
 	}
 	goodIndices := []int{}
 
-	for _, i := range(indices) {
+	for _, i := range indices {
 		delta, err := diff.Delta(i)
 		if err != nil {
 			panic(err)
@@ -375,7 +427,7 @@ func findDeltaIndicesThatEdit(diff *libgit.Diff, filepath string) []int {
 
 	goodIndices := []int{}
 
-	for _, i := range(indices) {
+	for _, i := range indices {
 		delta, err := diff.Delta(i)
 		if err != nil {
 			panic(err)
@@ -387,16 +439,15 @@ func findDeltaIndicesThatEdit(diff *libgit.Diff, filepath string) []int {
 	return goodIndices
 }
 
-
 func grabPatchesThatAdd(diff *libgit.Diff, filepath string) ([]string, error) {
 	deltaIndices := findDeltaIndicesThatAdd(diff, filepath)
 	if len(deltaIndices) == 0 {
-		return []string{}, fmt.Errorf("Attempting to get the delta of a diff " +
-			"that is supposed to add %s when that diff does not " +
+		return []string{}, fmt.Errorf("Attempting to get the delta of a diff "+
+			"that is supposed to add %s when that diff does not "+
 			"actually adds that file (%+v)", filepath, diff)
 	}
 	patchesStr := []string{}
-	for _, deltaIndex := range(deltaIndices) {
+	for _, deltaIndex := range deltaIndices {
 		patch, err := diff.Patch(deltaIndex)
 		if err != nil {
 			panic(err)
@@ -418,7 +469,7 @@ func Contains(content, substring string, strict bool) bool {
 	if !strict {
 		content, substring = strings.ToLower(content), strings.ToLower(substring)
 		accentsReplacer := strings.NewReplacer("é", "e", "è", "e", "ë", "e", "ï", "i", "ô", " ")
-		punctuationReplacer := strings.NewReplacer("-", " ", "_", " ", ".", " ", ",", " ", ":", " ", )
+		punctuationReplacer := strings.NewReplacer("-", " ", "_", " ", ".", " ", ",", " ", ":", " ")
 
 		content, substring = accentsReplacer.Replace(content), accentsReplacer.Replace(substring)
 		content, substring = punctuationReplacer.Replace(content), punctuationReplacer.Replace(substring)
@@ -427,27 +478,26 @@ func Contains(content, substring string, strict bool) bool {
 	return strings.Contains(content, substring)
 }
 
-
-func main() {
-	fs := flag.NewFlagSet("osef", flag.ExitOnError)
-	var (
-		ghUsername  = fs.String("ghUsername", "", "Github usernamefor that student")
-		ghRepo  = fs.String("ghRepo", "", "Github repository path")
-		lastName = fs.String("lastName", "", "Student lastname, needed for the README check")
-		firstName = fs.String("firstName", "", "Student firstname, needed for the README check")
-	)
-	ff.Parse(fs, os.Args[1:], ff.WithEnvVarNoPrefix())
-
-	if *ghRepo == "" && *ghUsername == "" {
-		panic("No github username or repo path given")
-	}
-	if *lastName == "" {
-		fmt.Printf("No lastname given. Will not perform README check\n")
-	}
-	if *firstName == "" {
-		fmt.Printf("No firstname given. Will not perform README check\n")
-	}
-
-	grade, total, comment := gradeTutorial(*ghUsername, *ghRepo, *firstName, *lastName)
-	fmt.Printf("Grade %d/%d, %s\n", grade, total, comment)
-}
+//func main() {
+//	fs := flag.NewFlagSet("osef", flag.ExitOnError)
+//	var (
+//		ghUsername  = fs.String("ghUsername", "", "Github usernamefor that student")
+//		ghRepo  = fs.String("ghRepo", "", "Github repository path")
+//		lastName = fs.String("lastName", "", "Student lastname, needed for the README check")
+//		firstName = fs.String("firstName", "", "Student firstname, needed for the README check")
+//	)
+//	ff.Parse(fs, os.Args[1:], ff.WithEnvVarNoPrefix())
+//
+//	if *ghRepo == "" && *ghUsername == "" {
+//		panic("No github username or repo path given")
+//	}
+//	if *lastName == "" {
+//		fmt.Printf("No lastname given. Will not perform README check\n")
+//	}
+//	if *firstName == "" {
+//		fmt.Printf("No firstname given. Will not perform README check\n")
+//	}
+//
+//	xd, err := gradeTutorialFromGithubInfo(*ghUsername, *ghRepo, *firstName, *lastName)
+//	fmt.Printf("Grade %d/%d, %s\n", grade, total, comment)
+//}
