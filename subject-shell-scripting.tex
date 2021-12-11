@@ -152,13 +152,13 @@ You have to create one directory per exercise.
 
 For each exercise, you have to write a script and provide a \texttt{README} file. The script should solve the exercise. The \texttt{README} file should be a text file that describes how you solved the exercise and the problems you encountered. In the scenario where you cannot have a good enough script, leave a \texttt{README} file with the solutions you tried to implement. Who knows, you might save some points :) Also, you can provide a \texttt{tests} directory. It is a good practice to write automatic tests for your code. As we did not study that on tutorials, no point will be taken off if there are no tests. However, points can be granted if you provide good tests along with your scripts.
 
-As it is a good practice to perform git commits regularily, you are asked to do it often. If you do not save often your advancements, you will loose points on your final grade. Also, remember that you can push your commits to your github repository at any time.
+As it is a good practice to perform git commits regularily, you are asked to do it often. \textbf{If you do not commit your changes between each level, you will loose points on your final grade}. Also, remember that you can push your commits to your github repository at any time.
 
 \section{Evaluation}
 \subsection{Instructions}
-\newdate{duedate}{8}{01}{2020}
+\newdate{duedate}{15}{12}{2021}
 
-You are asked to constituate a team of 4 to 5 persons. You will be graded as a team on:
+You are asked to constituate a team of 2 persons. You will be graded as a team on:
 \begin{itemize}
 	\item An oral presentation of your work (no need to prepare slides, we will discuss around your code)
 	\item General UNIX knowledge questions
@@ -416,11 +416,11 @@ total 4
     \item[New notions:] Conditions
 \end{description}
 
-Write a script that, given two arguments, prints \texttt{Hello }, followed by the first argument, a whitespace, the second argument and \texttt{, have a nice day!}. 
+Write a script that, given two arguments, prints \texttt{Hello }, followed by the first argument, a whitespace, the second argument and \texttt{, have a nice day!}.
 
 If there is no error, the return code should be 0. If there is an error, the return code should be 1 and the following line should be displayed: \texttt{Usage: ./salutation.sh firstname lastname}.
 
-The error cases are: 
+The error cases are:
 
 \begin{itemize}
         \item If no argument is supplied
@@ -606,8 +606,9 @@ Write a script similar to the one from the previous exercise. The behavior of th
 
 \begin{itemize}
 \item If no positional parameter is given, keep the behavior the same as for my\_ansible.sh
-\item If more than one positional parameter is given, display \texttt{Usage: ./my\_ansible\_advanced.sh [username]} and exit with a code 1
 \item If a positional parameter is given, use it to create an intermediary directory in \texttt{documents}
+\item If more than one positional parameter is given, display \texttt{Usage: ./my\_ansible\_advanced.sh [username]} and exit with a code 1
+\item If a positional parameter is given but the directory \texttt{documents} does not exist, display \texttt{directory documents must exist} and exit with a code 2
 \end{itemize}
 
 \textbf{Bonus:} Prevent side-effects from malicious usages of that script (e.g. prevent what happens if the user inputs "\texttt{..}" as the positional argument)
@@ -617,9 +618,13 @@ Write a script similar to the one from the previous exercise. The behavior of th
 \begin{lstlisting}[language=bash]
 $ls
 my_ansible_advanced.sh*
+$./my_ansible_advanced.sh john
+directory documents must exist
+$echo $?
+2
 $ls
 my_ansible_advanced.sh*
-$./my_ansible_advanced.sh 
+$./my_ansible_advanced.sh
 $tree --charset=ascii
 .
 |-- documents
