@@ -66,6 +66,23 @@ func getParent(commit *libgit.Commit) *libgit.Commit {
 	return commit.Parent(0)
 }
 
+func discardSignedCommits(commits []*libgit.Commit) []*libgit.Commit {
+	res := []*libgit.Commit{}
+	discardedcount := 0
+	for _, c := range commits {
+		committer := c.Committer()
+		if committer != nil && committer.Name == "GitHub" {
+			discardedcount += 1
+		} else {
+			res = append(res, c)
+		}
+	}
+	if discardedcount > 0 {
+		fmt.Printf("Discarding %d commits (commited made via GitHub GUI)\n", discardedcount)
+	}
+	return res
+}
+
 func discardTooRecentCommits(commits []*libgit.Commit, limit time.Time) []*libgit.Commit {
 	finalList := []*libgit.Commit{}
 	commitsDiscarded := []*libgit.Commit{}
@@ -157,6 +174,7 @@ func gradeTutorialFromUrl(tutorialURL string, firstName string, lastName string)
 		return nil, err
 	}
 	commits = discardTooRecentCommits(commits, submissionDeadline)
+	commits = discardSignedCommits(commits)
 	fmt.Printf("Analyzing %d commits...\n", len(commits))
 
 	commitCount := len(commits)
