@@ -1,0 +1,35 @@
+\contentsline {section}{\numberline {1}Foreword}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Objective}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Notions required}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Setup}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Python}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}C}{2}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Evaluation}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Instructions}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Expected output}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}A word on cheating}{3}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Subject}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Objective}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Walkthrough}{3}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}How does ps work?}{3}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Reference documentation}{5}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Ready?}{5}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Level 1: Columns and padding}{6}{subsection.4.6}%
+\contentsline {subsubsection}{\numberline {4.6.1}Objective}{6}{subsubsection.4.6.1}%
+\contentsline {subsubsection}{\numberline {4.6.2}Example usage}{6}{subsubsection.4.6.2}%
+\contentsline {subsubsection}{\numberline {4.6.3}Help}{7}{subsubsection.4.6.3}%
+\contentsline {subsubsection}{\numberline {4.6.4}Bonus}{7}{subsubsection.4.6.4}%
+\contentsline {subsection}{\numberline {4.7}Level 2: Display a specific process information}{7}{subsection.4.7}%
+\contentsline {subsubsection}{\numberline {4.7.1}Example usage}{7}{subsubsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.8}Level 3: Parent pid}{8}{subsection.4.8}%
+\contentsline {subsubsection}{\numberline {4.8.1}Example usage}{8}{subsubsection.4.8.1}%
+\contentsline {subsection}{\numberline {4.9}Level 4: Command column}{8}{subsection.4.9}%
+\contentsline {subsubsection}{\numberline {4.9.1}Example usage}{8}{subsubsection.4.9.1}%
+\contentsline {subsubsection}{\numberline {4.9.2}Help}{9}{subsubsection.4.9.2}%
+\contentsline {subsection}{\numberline {4.10}Level 5: Display multiple processes}{9}{subsection.4.10}%
+\contentsline {subsubsection}{\numberline {4.10.1}Example usage}{9}{subsubsection.4.10.1}%
+\contentsline {subsection}{\numberline {4.11}Level 6: Display all processes!}{10}{subsection.4.11}%
+\contentsline {subsubsection}{\numberline {4.11.1}Example usage}{10}{subsubsection.4.11.1}%
+\contentsline {subsection}{\numberline {4.12}Level 7: Display processes related to the current terminal}{10}{subsection.4.12}%
+\contentsline {subsubsection}{\numberline {4.12.1}Example usage}{10}{subsubsection.4.12.1}%
+\contentsline {subsection}{\numberline {4.13}Level 8 and beyond (bonus)}{11}{subsection.4.13}%

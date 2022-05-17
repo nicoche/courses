@@ -1,0 +1,16 @@
+\contentsline {section}{\numberline {1}Foreword}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Notions seen in the tutorials}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Objectives}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Setup}{2}{section.2}%
+\contentsline {section}{\numberline {3}Instructions}{2}{section.3}%
+\contentsline {section}{\numberline {4}Evaluation}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Instructions}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}A word on cheating}{3}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Exercises}{3}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Level 1: A simple program}{4}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Level 2: Compilation!}{4}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Level 3: Cleanup script}{5}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Level 4: Name your program}{6}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Level 5: Guessing game}{7}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Level 6: Command line arguments}{8}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Level 7: Makefile (bonus)}{9}{subsection.5.7}%
