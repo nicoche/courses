@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 	//"flag"
 	//"github.com/peterbourgon/ff/v3"
-	libgit "github.com/libgit2/git2go/v31"
+	libgit "github.com/libgit2/git2go/v33"
 )
 
 // Check bladeadoe wdewd wd
@@ -66,7 +66,7 @@ func getParent(commit *libgit.Commit) *libgit.Commit {
 	return commit.Parent(0)
 }
 
-func discardSignedCommits(commits []*libgit.Commit) []*libgit.Commit {
+func discardSignedCommits(commits []*libgit.Commit) ([]*libgit.Commit, int) {
 	res := []*libgit.Commit{}
 	discardedcount := 0
 	for _, c := range commits {
@@ -80,10 +80,10 @@ func discardSignedCommits(commits []*libgit.Commit) []*libgit.Commit {
 	if discardedcount > 0 {
 		fmt.Printf("Discarding %d commits (commited made via GitHub GUI)\n", discardedcount)
 	}
-	return res
+	return res, discardedcount
 }
 
-func discardTooRecentCommits(commits []*libgit.Commit, limit time.Time) []*libgit.Commit {
+func discardTooRecentCommits(commits []*libgit.Commit, limit time.Time) ([]*libgit.Commit, int) {
 	finalList := []*libgit.Commit{}
 	commitsDiscarded := []*libgit.Commit{}
 	for _, commit := range commits {
@@ -98,7 +98,7 @@ func discardTooRecentCommits(commits []*libgit.Commit, limit time.Time) []*libgi
 	if len(commitsDiscarded) > 0 {
 		fmt.Printf("Discarding %d commits (commited after deadline)\n", len(commitsDiscarded))
 	}
-	return finalList
+	return finalList, len(commitsDiscarded)
 }
 
 type GitTutorialGrade struct {
@@ -136,11 +136,14 @@ func certificateCheckCallback(cert *libgit.Certificate, valid bool, hostname str
 }
 
 func gradeTutorialFromUrl(tutorialURL string, firstName string, lastName string) (*GitTutorialGrade, error) {
+	comment := ""
+
 	if tutorialURL == "" {
+		comment += "no repo url provided."
 		return &GitTutorialGrade{
 			Grade: 0,
 			OutOf: 0,
-			Comment: "no url provided",
+			Comment: comment,
 		}, nil
 	}
 
@@ -157,6 +160,14 @@ func gradeTutorialFromUrl(tutorialURL string, firstName string, lastName string)
 	defer os.RemoveAll(cloneTo)
 
 	_, err = cloneRepo(tutorialURL)
+	if errors.Is(err, ErrRepoNotFound) {
+		comment += "repo does not exist."
+		return &GitTutorialGrade{
+			Grade: 0,
+			OutOf: 0,
+			Comment: comment,
+		}, nil
+	}
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not clone %s", tutorialURL)
 	}
@@ -169,12 +180,23 @@ func gradeTutorialFromUrl(tutorialURL string, firstName string, lastName string)
 	if err != nil {
 		return nil, err
 	}
-	submissionDeadline, err := time.Parse(time.UnixDate, "Sun Dec 10 20:00:00 UTC 2021")
+	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
 		return nil, err
 	}
-	commits = discardTooRecentCommits(commits, submissionDeadline)
-	commits = discardSignedCommits(commits)
+	const longForm = "Jan 2, 2006 at 3:04pm (MST)"
+	submissionDeadline, err := time.ParseInLocation(longForm, "Dec 15, 2021 at 7:00am (CEST)", loc)
+	if err != nil {
+		return nil, err
+	}
+	commits, tooRecentCount := discardTooRecentCommits(commits, submissionDeadline)
+	if tooRecentCount > 0 {
+		comment += fmt.Sprintf("discarded %d commits made after deadline. ", tooRecentCount)
+	}
+	commits, signedCommitsCount := discardSignedCommits(commits)
+	if signedCommitsCount > 0 {
+		comment += fmt.Sprintf("discarded %d commits made via github GUI. ", signedCommitsCount)
+	}
 	fmt.Printf("Analyzing %d commits...\n", len(commits))
 
 	commitCount := len(commits)
@@ -199,10 +221,11 @@ func gradeTutorialFromUrl(tutorialURL string, firstName string, lastName string)
 	}
 
 	grade, outOf, details := computeGrade(checkValidationTable)
+	comment += details
 	return &GitTutorialGrade{
 		Grade: grade,
 		OutOf: outOf,
-		Comment: details,
+		Comment: comment,
 	}, nil
 }
 

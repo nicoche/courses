@@ -22,6 +22,7 @@ func loadCSV(path string) (error, [][]string) {
 	}
 	defer f.Close()
 	csvReader := csv.NewReader(f)
+	csvReader.Comma = ';'
 	records, err := csvReader.ReadAll()
 	if err != nil {
 		return errors.Wrapf(err, "could not read %s as a csv", path), nil
@@ -71,12 +72,25 @@ func main() {
 		panic("")
 	}
 
+	csvFile, err := os.Create("out_tmp.csv")
+	if err != nil {
+		panic(err)
+	}
+	defer csvFile.Close()
+	w := csv.NewWriter(csvFile)
+	defer w.Flush()
+
+	records := [][]string{}
 	for _, s := range students {
-		xd, err := gradeTutorialFromUrl(s.GitTutorialUrl, s.Firstname, s.Lastname)
+		out, err := gradeTutorialFromUrl(s.GitTutorialUrl, s.Firstname, s.Lastname)
 		if err != nil {
 			fmt.Printf("Could not grade tuto: %+v\n", err)
 			panic("")
 		}
-		fmt.Printf("%+v - %+v\n", s, xd)
+		fmt.Printf("%+v - %+v\n", s, out)
+		records = append(records, []string{s.Firstname, fmt.Sprint(out.Grade), out.Comment})
 	}
+
+	w.WriteAll(records)
+
 }

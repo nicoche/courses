@@ -2,8 +2,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 h1:El6M4kTTCOh6aBiKaUGG7oYTSPP8MxqL4YI3kZKwcP4=
 github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510/go.mod h1:pupxD2MaaD3pAXIBCelhxNneeOaAeabZDe5s4K6zSpQ=
-github.com/libgit2/git2go/v31 v31.7.4 h1:fgMGNj34h6u2CVJXTa2pija20M2h79zQdl2U1IUnfbE=
-github.com/libgit2/git2go/v31 v31.7.4/go.mod h1:c/rkJcBcUFx6wHaT++UwNpKvIsmPNqCeQ/vzO4DrEec=
+github.com/libgit2/git2go/v33 v33.0.9 h1:4ch2DJed6IhJO28BEohkUoGvxLsRzUjxljoNFJ6/O78=
+github.com/libgit2/git2go/v33 v33.0.9/go.mod h1:KdpqkU+6+++4oHna/MIOgx4GCQ92IPCdpVRMRI80J+4=
 github.com/pelletier/go-toml v1.6.0/go.mod h1:5N711Q9dKgbdkxHL+MEfF31hpT7l0S0s/t2kKREewys=
 github.com/peterbourgon/ff/v3 v3.1.2 h1:0GNhbRhO9yHA4CC27ymskOsuRpmX0YQxwxM9UPiP6JM=
 github.com/peterbourgon/ff/v3 v3.1.2/go.mod h1:XNJLY8EIl6MjMVjBS4F0+G0LYoAqs0DTa4rmHHukKDE=
