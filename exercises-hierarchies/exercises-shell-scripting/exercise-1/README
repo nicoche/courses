@@ -1,6 +1,0 @@
-No real difficulty. I checked ls's manual and found there all of the options that I needed to use.
-
--R is the recursive option
--l is the long-listing format
--h is for humand readable file sizes
--a is to display hidden files
