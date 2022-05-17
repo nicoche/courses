@@ -1,7 +1,7 @@
 An introductory course to UNIX.
 
 
-There are a few PDFs:
+There are a few PDFs (preview at https://unix101-nicoche.koyeb.app):
 - A tutorial with basics of UNIX: `tutorial-1`
 - A tutorial for git CLI: `tutorial-git`
 - 3 projects of varying difficulty:
