@@ -13,7 +13,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     host = os.environ.get("HOST", "0.0.0.0")
-    port = os.environ.get("PORT", 8000)
+    port = int(os.environ.get("PORT", "8000"))
 
     with socketserver.TCPServer((host, port), Handler) as httpd:
         print("serving at port", port)
